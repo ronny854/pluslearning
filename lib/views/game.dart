@@ -1,18 +1,12 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:learning_appfinal/conexion/db_helper.dart';
 import 'package:learning_appfinal/others/constans.dart';
-import 'package:learning_appfinal/others/state_manager.dart';
 import 'package:learning_appfinal/providers/options_provider.dart';
 import 'package:learning_appfinal/providers/questions_provider.dart';
-import 'package:learning_appfinal/providers/topics_provider.dart';
 import 'package:learning_appfinal/views/score.dart';
-import 'package:learning_appfinal/widgets/optionsW.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_riverpod/all.dart';
 
 /* class Game extends StatefulWidget {
   final List mydata;
