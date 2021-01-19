@@ -5,7 +5,6 @@ import 'package:learning_appfinal/others/constans.dart';
 import 'package:learning_appfinal/others/state_manager.dart';
 import 'package:learning_appfinal/providers/topics_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:learning_appfinal/views/game.dart';
 
 class Topics extends StatefulWidget {
   Topics({Key key}) : super(key: key);

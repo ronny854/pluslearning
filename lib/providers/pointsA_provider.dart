@@ -47,4 +47,32 @@ class PointsA {
   }
 }
 
-class PointsAProvider {}
+class PointsAProvider {
+  Future<List<PointsA>> getPointsAById(Database db, int id) async {
+    var maps = await db.query(
+      tablePointsA,
+      columns: [
+        columnnPointsAId,
+        columnPointsAIdTo,
+        columnPointsAScore,
+        columnPointsANumQuesC,
+        columnPointsANumQuesIn,
+        columnPointsANumQuesUn,
+        columnPointsAPorcenTo,
+        columnPointsAPorcenDe,
+        columnPointsAState,
+      ],
+      where: '$columnPointsAIdTo=?',
+      whereArgs: [id],
+    );
+    if (maps.length > 0)
+      return maps.map((pointsA) => PointsA.fromMap(pointsA)).toList();
+
+    return null;
+  }
+
+  Future<int> update(Database db, PointsA pointsA) async {
+    return await db.update(tablePointsA, pointsA.toMap(),
+        where: '$columnPointsAIdTo = ?', whereArgs: [pointsA.idTo]);
+  }
+}

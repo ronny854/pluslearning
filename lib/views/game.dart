@@ -62,13 +62,13 @@ class _GameState extends State<Game> {
   bool canceltimer = false;
   bool questionState = false;
   bool optionState = false;
-
+  bool _isButtonDisabled;
   @override
   void initState() {
     //starttimer();
     //genrandomarray();
     //print(lisaPreguntas);
-
+    _isButtonDisabled = false;
     super.initState(); //print('game $idquestionTopic');
   }
 
@@ -119,7 +119,8 @@ class _GameState extends State<Game> {
   } */
 
   void checkanswer(int correctO, int posColor) {
-    if (correctO == 0) {
+    _isButtonDisabled = true;
+    if (correctO == 1) {
       points = points + listQuestions[numQuestion].score;
       colortoshow = right;
       setState(() {
@@ -144,7 +145,7 @@ class _GameState extends State<Game> {
     });
     // nextquestion();
     // changed timer duration to 1 second
-    Timer(Duration(seconds: 1), nextquestion);
+    Timer(Duration(milliseconds: 2000), nextquestion);
   }
 
   void nextquestion() {
@@ -153,6 +154,7 @@ class _GameState extends State<Game> {
     //questionState = false;
 
     setState(() {
+      _isButtonDisabled = false;
       if (numQuestion < listQuestions.length - 1) {
         numQuestion++;
       } else {
@@ -172,7 +174,7 @@ class _GameState extends State<Game> {
     //starttimer();
   }
 
-  Widget botonOpcion(String k) {
+  /*  Widget botonOpcion(String k) {
     return Padding(
       padding: EdgeInsets.symmetric(
         vertical: 10.0,
@@ -180,7 +182,14 @@ class _GameState extends State<Game> {
       ),
       child: MaterialButton(
         //onPressed: () => checkanswer(k),
-        onPressed: () => nextquestion(),
+        onPressed: () {
+          if (_isButtonDisabled) {
+            return null;
+          } else {
+            return nextquestion();
+          }
+        },
+
         child: Text(
           //mydata[2][i.toString()][k],
           'opcion',
@@ -200,7 +209,7 @@ class _GameState extends State<Game> {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       ),
     );
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -302,7 +311,13 @@ class _GameState extends State<Game> {
             padding: EdgeInsets.all(10.0),
             alignment: Alignment.center,
             child: MaterialButton(
-              onPressed: () => checkanswer(values[index].correctO, index),
+              onPressed: () {
+                if (_isButtonDisabled) {
+                  return null;
+                } else {
+                  return checkanswer(values[index].correctO, index);
+                }
+              },
               //onPressed: () => nextquestion(),
               child: Text(
                 values[index].textO,
