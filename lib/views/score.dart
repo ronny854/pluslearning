@@ -25,7 +25,7 @@ class Score extends StatelessWidget {
                 Text('$points'),
                 MaterialButton(
                   onPressed: () {
-                    return Navigator.pushNamed(context, 'temas');
+                    return Navigator.pushNamed;
                   },
                   child: Text('Continue'),
                 ),

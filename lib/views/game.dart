@@ -7,6 +7,7 @@ import 'package:learning_appfinal/others/constans.dart';
 import 'package:learning_appfinal/providers/options_provider.dart';
 import 'package:learning_appfinal/providers/questions_provider.dart';
 import 'package:learning_appfinal/views/score.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 /* class Game extends StatefulWidget {
   final List mydata;
@@ -63,6 +64,10 @@ class _GameState extends State<Game> {
   bool questionState = false;
   bool optionState = false;
   bool _isButtonDisabled;
+  double lifeHero = 1.0;
+  double lifeEnemy = 1.0;
+  Color barHero = Colors.green;
+  Color barEnemy = Colors.green;
   @override
   void initState() {
     //starttimer();
@@ -97,27 +102,6 @@ class _GameState extends State<Game> {
     });
   }
 
-/*   void nextquestion() {
-    canceltimer = false;
-    timer = 30;
-    setState(() {
-      if (j < 5) {
-        i = random_array[j];
-        j++;
-      } else {
-        /*  Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => Score(marks: marks),
-        )); */
-      }
-      btncolor["a"] = Colors.indigoAccent;
-      btncolor["b"] = Colors.indigoAccent;
-      btncolor["c"] = Colors.indigoAccent;
-      btncolor["d"] = Colors.indigoAccent;
-      disableAnswer = false;
-    });
-    starttimer();
-  } */
-
   void checkanswer(int correctO, int posColor) {
     _isButtonDisabled = true;
     if (correctO == 1) {
@@ -127,6 +111,13 @@ class _GameState extends State<Game> {
         animacion = Ataque;
         _controlsPersonje.play(animacion);
         _controlsPersonje.onCompleted(animacion = Espera);
+        if (lifeEnemy >= 0.0) lifeEnemy -= 0.2;
+        if (lifeEnemy <= 0.6 && lifeEnemy >= 0.4) barEnemy = Colors.yellow;
+        if (lifeEnemy <= 0.4 && lifeEnemy >= 0.0) barEnemy = Colors.red;
+        if (lifeEnemy <= 0.0) {
+          lifeEnemy = 0.0;
+          enviarScore();
+        }
       });
     } else {
       colortoshow = wrong;
@@ -134,6 +125,13 @@ class _GameState extends State<Game> {
         animacion = Ataque;
         _controlsEnemigo.play(animacion);
         _controlsEnemigo.onCompleted(animacion = Espera);
+        if (lifeHero >= 0.0) lifeHero -= 0.2;
+        if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
+        if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
+        if (lifeHero <= 0) {
+          lifeHero = 0.0;
+          enviarScore();
+        }
       });
     }
     setState(() {
@@ -158,14 +156,7 @@ class _GameState extends State<Game> {
       if (numQuestion < listQuestions.length - 1) {
         numQuestion++;
       } else {
-        Future.delayed(Duration(seconds: 2), () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            //print(topic.id);
-            return Score(
-              points: points,
-            );
-          }));
-        });
+        enviarScore();
       }
       for (var i = 0; i < btncolor.length; i++) {
         btncolor[i] = defaul;
@@ -174,42 +165,16 @@ class _GameState extends State<Game> {
     //starttimer();
   }
 
-  /*  Widget botonOpcion(String k) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: 10.0,
-        horizontal: 20.0,
-      ),
-      child: MaterialButton(
-        //onPressed: () => checkanswer(k),
-        onPressed: () {
-          if (_isButtonDisabled) {
-            return null;
-          } else {
-            return nextquestion();
-          }
-        },
-
-        child: Text(
-          //mydata[2][i.toString()][k],
-          'opcion',
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: "Alike",
-            fontSize: 16.0,
-          ),
-          maxLines: 1,
-        ),
-        color: btncolor[k],
-        splashColor: Colors.indigo[700],
-        highlightColor: Colors.indigo[700],
-        minWidth: 200.0,
-        height: 45.0,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-      ),
-    );
-  } */
+  Future<dynamic> enviarScore() {
+    return Future.delayed(Duration(seconds: 2), () {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        //print(topic.id);
+        return Score(
+          points: points,
+        );
+      }));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,6 +190,55 @@ class _GameState extends State<Game> {
                 fit: BoxFit.cover,
                 height: media.height,
                 width: media.width,
+              ),
+            ),
+            Container(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    IconPers,
+                    fit: BoxFit.cover,
+                    height: 55.0,
+                    width: 55.0,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 160.0),
+                  ),
+                  Transform(
+                    transform: Matrix4.diagonal3Values(-1.0, 1.0, 1.0),
+                    child: LinearPercentIndicator(
+                      width: 160.0,
+                      lineHeight: 22.0,
+                      percent: 1 - lifeHero,
+                      backgroundColor: barHero,
+                      progressColor: Colors.grey,
+                      animation: true,
+                      animationDuration: 1000,
+                      curve: Curves.fastOutSlowIn,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 127.0),
+                  ),
+                  LinearPercentIndicator(
+                    width: 160.0,
+                    lineHeight: 22.0,
+                    percent: 1 - lifeEnemy,
+                    //linearStrokeCap: LinearStrokeCap.roundAll,
+                    backgroundColor: barEnemy,
+                    progressColor: Colors.grey,
+                    animation: true,
+                    animationDuration: 1000,
+                    curve: Curves.fastOutSlowIn,
+                  ),
+                  Image.asset(
+                    IconPers,
+                    fit: BoxFit.cover,
+                    height: 55.0,
+                    width: 55.0,
+                  ),
+                ],
               ),
             ),
             Container(

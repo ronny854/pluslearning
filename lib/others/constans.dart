@@ -3,12 +3,11 @@ const String Introanimacion = 'assets/animaciones/menufinal.flr';
 
 //database
 
-
 //Imagenes
 const String Boton1 = 'assets/imagenes/boton1.png';
 const String Boton2 = 'assets/imagenes/boton2.png';
 const String FondoTemas = 'assets/imagenes/menuTemas.png';
-
+const String IconPers = 'assets/imagenes/personaje.jpg';
 //preguntas
 const String P_Tema1 = 'assets/preguntas/topic_1.json';
 const String P_Tema2 = 'assets/preguntas/topic_2.json';
