@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       onGenerateRoute: route.generateRoute,
       home: Intro(),
+      
     );
   }
 }

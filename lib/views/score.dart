@@ -11,8 +11,8 @@ class Score extends StatelessWidget {
       body: Stack(
         children: [
           Image.asset(
-            FondoTemas,
-            fit: BoxFit.cover,
+            ScoreWin,
+            fit: BoxFit.contain,
             height: media.height,
             width: media.width,
           ),

@@ -45,8 +45,8 @@ class _GameState extends State<Game> {
   bool disableAnswer = false;
   // extra varibale to iterate
   int j = 1;
-  int timer = 30;
-  String showtimer = "30";
+  int timer = 60;
+  String showtimer = "60";
   //var random_array;
 
   Map<int, Color> btncolor = {
@@ -68,6 +68,10 @@ class _GameState extends State<Game> {
   double lifeEnemy = 1.0;
   Color barHero = Colors.green;
   Color barEnemy = Colors.green;
+  int dificultad = 1;
+  double damageHero = 0.2;
+  double damageEnemy = 0.2;
+
   @override
   void initState() {
     //starttimer();
@@ -111,10 +115,11 @@ class _GameState extends State<Game> {
         animacion = Ataque;
         _controlsPersonje.play(animacion);
         _controlsPersonje.onCompleted(animacion = Espera);
-        if (lifeEnemy >= 0.0) lifeEnemy -= 0.2;
-        if (lifeEnemy <= 0.6 && lifeEnemy >= 0.4) barEnemy = Colors.yellow;
-        if (lifeEnemy <= 0.4 && lifeEnemy >= 0.0) barEnemy = Colors.red;
-        if (lifeEnemy <= 0.0) {
+        lifeEnemy = double.parse((lifeEnemy - damageHero).toStringAsFixed(1));
+        if (lifeEnemy >= 0.1) {
+          if (lifeEnemy <= 0.6 && lifeEnemy >= 0.4) barEnemy = Colors.yellow;
+          if (lifeEnemy <= 0.4 && lifeEnemy >= 0.0) barEnemy = Colors.red;
+        } else {
           lifeEnemy = 0.0;
           enviarScore();
         }
@@ -125,10 +130,12 @@ class _GameState extends State<Game> {
         animacion = Ataque;
         _controlsEnemigo.play(animacion);
         _controlsEnemigo.onCompleted(animacion = Espera);
-        if (lifeHero >= 0.0) lifeHero -= 0.2;
-        if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
-        if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
-        if (lifeHero <= 0) {
+        lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
+        if (lifeHero >= 0.1) {
+          print('vida: $lifeHero daño: $damageEnemy');
+          if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
+          if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
+        } else {
           lifeHero = 0.0;
           enviarScore();
         }
@@ -219,7 +226,7 @@ class _GameState extends State<Game> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 127.0),
+                    padding: EdgeInsets.only(left: 93.0),
                   ),
                   LinearPercentIndicator(
                     width: 160.0,
@@ -319,7 +326,7 @@ class _GameState extends State<Game> {
       scrollDirection: Axis.horizontal,
       itemCount: values == null ? 0 : values.length,
       itemBuilder: (BuildContext context, int index) {
-        print(index);
+        //print(index);
         if (optionState == false) {
           return Container(
             padding: EdgeInsets.all(10.0),

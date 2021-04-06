@@ -59,8 +59,8 @@ class QuestionProvider {
           columnQuestionScore,
           columnQuestionState,
         ],
-        where: '$columnQuestionIdTopic=?',
-        whereArgs: [id],
+        where: '$columnQuestionIdTopic=? and $columnQuestionState=?',
+        whereArgs: [id, 1],
         limit: 10,
         orderBy: 'Random()');
     if (maps.length > 0)
