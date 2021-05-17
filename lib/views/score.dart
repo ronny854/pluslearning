@@ -7,32 +7,36 @@ class Score extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
-    return Scaffold(
-      body: Stack(
-        children: [
-          Image.asset(
-            ScoreWin,
-            fit: BoxFit.contain,
-            height: media.height,
-            width: media.width,
-          ),
-          Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.only(top: 150.0),
-            child: Column(
-              children: [
-                Text('You Score'),
-                Text('$points'),
-                MaterialButton(
-                  onPressed: () {
-                    return Navigator.pushNamed;
-                  },
-                  child: Text('Continue'),
-                ),
-              ],
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Image.asset(
+              ScoreWin,
+              fit: BoxFit.contain,
+              height: media.height,
+              width: media.width,
             ),
-          ),
-        ],
+            Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(top: 150.0),
+              child: Column(
+                children: [
+                  Text('You Score'),
+                  Text('$points'),
+                  MaterialButton(
+                    onPressed: () {
+                      //return Navigator.pushReplacementNamed(context, "temas");
+                      return Navigator.of(context).pop();
+                    },
+                    child: Text('Continue'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

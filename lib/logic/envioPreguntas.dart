@@ -25,6 +25,7 @@ class ePreguntas extends StatelessWidget {
   Future<List<Question>> getQuestionByCategory(int id) async {
     var db = await copyDB();
     var result = await QuestionProvider().getQuestionCategoryById(db, id);
+
     return result;
   }
 }

@@ -7,6 +7,7 @@ import 'package:learning_appfinal/others/constans.dart';
 import 'package:learning_appfinal/providers/options_provider.dart';
 import 'package:learning_appfinal/providers/questions_provider.dart';
 import 'package:learning_appfinal/views/score.dart';
+import 'package:learning_appfinal/widgets/count_down.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 /* class Game extends StatefulWidget {
@@ -25,9 +26,12 @@ class Game extends StatefulWidget {
   _GameState createState() => _GameState(listQuestions);
 }
 
-class _GameState extends State<Game> {
-  final List<Question> listQuestions;
+class _GameState extends State<Game> with TickerProviderStateMixin {
+  //controler timer
+  AnimationController _controllerTimer;
+  final limitTime = 15;
 
+  final List<Question> listQuestions;
   _GameState(this.listQuestions);
   int numQuestion = 0;
 
@@ -73,40 +77,43 @@ class _GameState extends State<Game> {
   double damageEnemy = 0.2;
 
   @override
-  void initState() {
-    //starttimer();
-    //genrandomarray();
-    //print(lisaPreguntas);
-    _isButtonDisabled = false;
-    super.initState(); //print('game $idquestionTopic');
+  void dispose() {
+    if (_controllerTimer.isAnimating || _controllerTimer.isCompleted) {
+      _controllerTimer.dispose();
+      super.dispose();
+    }
   }
 
-  // overriding the setstate function to be called only if mounted
-/*   @override
-  void setState(fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  } */
-
-  void starttimer() async {
-    const onesec = Duration(seconds: 1);
-    Timer.periodic(onesec, (Timer t) {
-      setState(() {
-        if (timer < 1) {
-          t.cancel();
-          nextquestion();
-        } else if (canceltimer == true) {
-          t.cancel();
+  @override
+  void initState() {
+    _isButtonDisabled = false;
+    super.initState();
+    _controllerTimer = AnimationController(vsync: this, duration: Duration(seconds: limitTime));
+    _controllerTimer.addListener(() {
+      if (_controllerTimer.isCompleted) {
+        _controllerTimer.stop();
+        animacion = Ataque;
+        _controlsEnemigo.play(animacion);
+        _controlsEnemigo.onCompleted(animacion = Espera);
+        lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
+        if (lifeHero >= 0.1) {
+          //print('vida: $lifeHero daño: $damageEnemy');
+          if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
+          if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
         } else {
-          timer = timer - 1;
+          lifeHero = 0.0;
+          enviarScore();
         }
-        showtimer = timer.toString();
-      });
+        Timer(Duration(milliseconds: 2000), nextquestion);
+        _controllerTimer.reset();
+        _controllerTimer.forward();
+      }
     });
+    _controllerTimer.forward(); //Start timer
   }
 
   void checkanswer(int correctO, int posColor) {
+    _controllerTimer.stop();
     _isButtonDisabled = true;
     if (correctO == 1) {
       points = points + listQuestions[numQuestion].score;
@@ -132,7 +139,7 @@ class _GameState extends State<Game> {
         _controlsEnemigo.onCompleted(animacion = Espera);
         lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
         if (lifeHero >= 0.1) {
-          print('vida: $lifeHero daño: $damageEnemy');
+          //print('vida: $lifeHero daño: $damageEnemy');
           if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
           if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
         } else {
@@ -141,16 +148,17 @@ class _GameState extends State<Game> {
         }
       });
     }
-    setState(() {
-      // applying the changed color to the particular button that was selected
-      btncolor[posColor] = colortoshow;
-      //colorboton[posColor] = colortoshow;
-      canceltimer = true;
-      disableAnswer = true;
-    });
+
+    // applying the changed color to the particular button that was selected
+    btncolor[posColor] = colortoshow;
+    //colorboton[posColor] = colortoshow;
+    canceltimer = true;
+    disableAnswer = true;
+
     // nextquestion();
-    // changed timer duration to 1 second
     Timer(Duration(milliseconds: 2000), nextquestion);
+    _controllerTimer.reset();
+    _controllerTimer.forward();
   }
 
   void nextquestion() {
@@ -174,7 +182,8 @@ class _GameState extends State<Game> {
 
   Future<dynamic> enviarScore() {
     return Future.delayed(Duration(seconds: 2), () {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //_controllerTimer.stop();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         //print(topic.id);
         return Score(
           points: points,
@@ -250,6 +259,12 @@ class _GameState extends State<Game> {
             ),
             Container(
               alignment: Alignment.topCenter,
+              child: CountDown(
+                animation: StepTween(begin: limitTime, end: 0).animate(_controllerTimer),
+              ),
+            ),
+/*             Container(
+              alignment: Alignment.topCenter,
               child: Text(
                 showtimer,
                 style: TextStyle(
@@ -259,7 +274,7 @@ class _GameState extends State<Game> {
                   color: Colors.white,
                 ),
               ),
-            ),
+            ), */
             Container(
               padding: EdgeInsets.only(top: 50.0, left: 125.0),
               child: Text(
