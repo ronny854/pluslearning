@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:learning_appfinal/conexion/db_helper.dart';
 import 'package:learning_appfinal/logic/envioPreguntas.dart';
 import 'package:learning_appfinal/others/constans.dart';
-import 'package:learning_appfinal/others/state_manager.dart';
+//import 'package:learning_appfinal/others/state_manager.dart';
 import 'package:learning_appfinal/providers/topics_provider.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+//import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Topics extends StatefulWidget {
   Topics({Key key}) : super(key: key);
@@ -41,7 +41,7 @@ class _TopicsState extends State<Topics> {
                       children: snapshot.data.map<Widget>((topic) {
                         return GestureDetector(
                           onTap: () {
-                            context.read(questionTopicState).state = topic;
+                            //context.read(questionTopicState).state = topic;
 /*                           Navigator.pushNamed(context, 'juego',
                                 arguments: topic.id); */
                             Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -91,7 +91,7 @@ class _TopicsState extends State<Topics> {
   Future<List<Topic>> getTopics() async {
     var db = await copyDB();
     var result = await TopicProvider().getTopics(db);
-    context.read(topicListProvider).state = result;
+    //context.read(topicListProvider).state = result;
     return result;
   }
 }

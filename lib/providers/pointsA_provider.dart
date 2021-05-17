@@ -1,6 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:learning_appfinal/providers/options_provider.dart';
-import 'package:learning_appfinal/providers/topics_provider.dart';
+//import 'package:flutter_riverpod/flutter_riverpod.dart';
+/* import 'package:learning_appfinal/providers/options_provider.dart';
+import 'package:learning_appfinal/providers/topics_provider.dart'; */
 import 'package:sqflite/sqflite.dart';
 
 final tablePointsA = 'tbl_puntosA';
@@ -65,8 +65,7 @@ class PointsAProvider {
       where: '$columnPointsAIdTo=?',
       whereArgs: [id],
     );
-    if (maps.length > 0)
-      return maps.map((pointsA) => PointsA.fromMap(pointsA)).toList();
+    if (maps.length > 0) return maps.map((pointsA) => PointsA.fromMap(pointsA)).toList();
 
     return null;
   }

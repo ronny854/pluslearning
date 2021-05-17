@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:learning_appfinal/logic/enviarPreguntas.dart';
 import 'package:learning_appfinal/others/constans.dart';
 
 Widget botonMenu(String titulo, String nextPage, BuildContext context) {

@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+//import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 
 final tableQuestion = 'tbl_pregunta';
@@ -63,13 +63,12 @@ class QuestionProvider {
         whereArgs: [id, 1],
         limit: 10,
         orderBy: 'Random()');
-    if (maps.length > 0)
-      return maps.map((question) => Question.fromMap(question)).toList();
+    if (maps.length > 0) return maps.map((question) => Question.fromMap(question)).toList();
     return null;
   }
 }
 
-class QuestionList extends StateNotifier<List<Question>> {
+/* class QuestionList extends StateNotifier<List<Question>> {
   QuestionList(List<Question> state) : super(state ?? []);
   void addAll(List<Question> question) {
     state.addAll(question);
@@ -81,4 +80,4 @@ class QuestionList extends StateNotifier<List<Question>> {
       question,
     ];
   }
-}
+} */

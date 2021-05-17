@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+//import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 
 final tableTopics = 'tbl_tema';
@@ -12,11 +12,7 @@ class Topic {
   int stateT;
 
   Map<String, dynamic> toMap() {
-    var map = <String, dynamic>{
-      columnTopicId: id,
-      columnTopicName: name,
-      columnTopicState: stateT
-    };
+    var map = <String, dynamic>{columnTopicId: id, columnTopicName: name, columnTopicState: stateT};
     return map;
   }
 
@@ -41,7 +37,7 @@ class TopicProvider {
   }
 }
 
-class TopicList extends StateNotifier<List<Topic>> {
+/* class TopicList extends StateNotifier<List<Topic>> {
   TopicList(List<Topic> state) : super(state ?? []);
   void addAll(List<Topic> topic) {
     state.addAll(topic);
@@ -53,4 +49,4 @@ class TopicList extends StateNotifier<List<Topic>> {
       topic,
     ];
   }
-}
+} */
