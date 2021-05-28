@@ -1,6 +1,7 @@
 //import 'package:flutter_riverpod/flutter_riverpod.dart';
 /* import 'package:learning_appfinal/providers/options_provider.dart';
 import 'package:learning_appfinal/providers/topics_provider.dart'; */
+import 'package:learning_appfinal/conexion/db_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 final tablePointsA = 'tbl_puntosA';
@@ -47,8 +48,9 @@ class PointsA {
   }
 }
 
-class PointsAProvider {
-  Future<List<PointsA>> getPointsAById(Database db, int id) async {
+class PointsAModel {
+  Future<List<PointsA>> getPointsAById(int id) async {
+    Database db = await copyDB();
     var maps = await db.query(
       tablePointsA,
       columns: [

@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare_controls.dart';
 import 'package:flutter/material.dart';
-import 'package:learning_appfinal/conexion/db_helper.dart';
+//import 'package:learning_appfinal/conexion/db_helper.dart';
 import 'package:learning_appfinal/others/constans.dart';
-import 'package:learning_appfinal/providers/options_provider.dart';
-import 'package:learning_appfinal/providers/questions_provider.dart';
+import 'package:learning_appfinal/models/options_model.dart';
+import 'package:learning_appfinal/models/questions_model.dart';
 import 'package:learning_appfinal/views/score.dart';
 import 'package:learning_appfinal/widgets/count_down.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -20,19 +20,39 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 // ignore: must_be_immutable
 class Game extends StatefulWidget {
   final List<Question> listQuestions;
-  Game({Key key, this.listQuestions}) : super(key: key);
+  int score;
+  int limitTime;
+  int dificultad;
+  double damageHero;
+  double damageEnemy;
+  Game(
+      {Key key,
+      this.listQuestions,
+      this.score,
+      this.limitTime,
+      this.dificultad,
+      this.damageHero,
+      this.damageEnemy})
+      : super(key: key);
 
   @override
-  _GameState createState() => _GameState(listQuestions);
+  _GameState createState() =>
+      _GameState(listQuestions, score, limitTime, dificultad, damageHero, damageEnemy);
 }
 
 class _GameState extends State<Game> with TickerProviderStateMixin {
   //controler timer
   AnimationController _controllerTimer;
-  final limitTime = 15;
+
+  final int score;
+  final int limitTime;
+  final int dificultad;
+  final double damageHero;
+  final double damageEnemy;
 
   final List<Question> listQuestions;
-  _GameState(this.listQuestions);
+  _GameState(this.listQuestions, this.score, this.limitTime, this.dificultad, this.damageHero,
+      this.damageEnemy);
   int numQuestion = 0;
 
   ////////////////////////////////////////////////////////////////////////
@@ -49,8 +69,8 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   bool disableAnswer = false;
   // extra varibale to iterate
   int j = 1;
-  int timer = 60;
-  String showtimer = "60";
+/*   int timer = 60;
+  String showtimer = "60"; */
   //var random_array;
 
   Map<int, Color> btncolor = {
@@ -72,9 +92,9 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   double lifeEnemy = 1.0;
   Color barHero = Colors.green;
   Color barEnemy = Colors.green;
-  int dificultad = 1;
-  double damageHero = 0.2;
-  double damageEnemy = 0.2;
+  //int dificultad = 1;
+  //double damageHero = 0.2;
+  //double damageEnemy = 0.2;
 
   @override
   void dispose() {
@@ -275,6 +295,8 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                 ),
               ),
             ), */
+            // condicion if
+            //score==0 ? Container() : Container(),
             Container(
               padding: EdgeInsets.only(top: 50.0, left: 125.0),
               child: Text(
@@ -282,6 +304,18 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                 style: TextStyle(color: Colors.white, fontSize: 20.0),
               ),
             ),
+
+            listQuestions[numQuestion].typeQ == 'picture'
+                ? imageQuestion(listQuestions[numQuestion].imgQ, true)
+                : imageQuestion('no hay nada', false),
+            /* : Container(
+                    padding: EdgeInsets.only(top: 100.0, left: 300.0),
+                    child: Text('no hay nada'),
+                  ), */
+/*                 Visibility(
+                    visible: true,
+                    child: Container(),
+                  ), */
             Row(
               children: [
                 Stack(
@@ -330,8 +364,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   }
 
   Future<List<Option>> getOptionQuestion(int id) async {
-    var db = await copyDB();
-    var result = await OptionProvider().getOptionQuestionById(db, id);
+    var result = await OptionModel().getOptionQuestionById(id);
     return result;
   }
 
@@ -375,6 +408,16 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
           return CircularProgressIndicator();
         }
       },
+    );
+  }
+
+  Widget imageQuestion(String img, bool visi) {
+    return Visibility(
+      visible: visi,
+      child: Container(
+        padding: EdgeInsets.only(top: 100.0, left: 300.0),
+        child: Text(img),
+      ),
     );
   }
 }

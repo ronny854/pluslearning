@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:learning_appfinal/conexion/db_helper.dart';
 import 'package:learning_appfinal/others/constans.dart';
 //import 'package:learning_appfinal/others/state_manager.dart';
-import 'package:learning_appfinal/providers/topics_provider.dart';
-import 'package:learning_appfinal/providers/pointsA_provider.dart';
+import 'package:learning_appfinal/models/topics_model.dart';
+import 'package:learning_appfinal/models/pointsA_model.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 //import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -45,8 +44,7 @@ class _ProfileState extends State<Profile> {
                       height: 250.0,
                       child: FutureBuilder(
                         future: getTopics(),
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
+                        builder: (BuildContext context, AsyncSnapshot snapshot) {
                           if (!snapshot.hasData) {
                             return CircularProgressIndicator();
                           } else {
@@ -59,8 +57,7 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
               Container(
-                padding:
-                    EdgeInsets.only(top: 50.0, left: (media.width / 2) - 200.0),
+                padding: EdgeInsets.only(top: 50.0, left: (media.width / 2) - 200.0),
                 child: FutureBuilder(
                   future: getPointsA(idTopics),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -80,16 +77,14 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<List<Topic>> getTopics() async {
-    var db = await copyDB();
-    var result = await TopicProvider().getTopics(db);
+    var result = await TopicModel().getTopics();
     //context.read(topicListProvider).state = result;
     return result;
   }
 
   Future<List<PointsA>> getPointsA(int id) async {
     print('entro aqui $id');
-    var db = await copyDB();
-    var result = await PointsAProvider().getPointsAById(db, id);
+    var result = await PointsAModel().getPointsAById(id);
     //context.read(topicListProvider).state = result;
     return result;
   }

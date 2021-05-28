@@ -5,7 +5,7 @@ const String Introanimacion = 'assets/animaciones/menufinal.flr';
 
 //Imagenes
 const String Boton1 = 'assets/imagenes/boton1.png';
-const String Boton2 = 'assets/imagenes/boton2.png';
+const String BotonTopic = 'assets/imagenes/boton_temas.png';
 const String FondoTemas = 'assets/imagenes/menuTemas.png';
 const String IconPers = 'assets/imagenes/personaje.jpg';
 const String ScoreWin = 'assets/imagenes/score_win.png';
