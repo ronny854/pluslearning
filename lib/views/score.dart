@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:learning_appfinal/others/constans.dart';
 
 class Score extends StatelessWidget {
-  Score({Key key, this.points}) : super(key: key);
+  Score({Key key, this.points, this.winner}) : super(key: key);
   int points;
+  bool winner;
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
@@ -13,7 +14,7 @@ class Score extends StatelessWidget {
         body: Stack(
           children: [
             Image.asset(
-              ScoreWin,
+              winner == true ? ScoreWin : ScoreLost,
               fit: BoxFit.contain,
               height: media.height,
               width: media.width,

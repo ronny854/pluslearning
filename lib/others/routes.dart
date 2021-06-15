@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learning_appfinal/views/achievements.dart';
+import 'package:learning_appfinal/views/character.dart';
 import 'package:learning_appfinal/views/game.dart';
 import 'package:learning_appfinal/views/menu.dart';
 import 'package:learning_appfinal/views/profile.dart';
@@ -23,6 +24,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => Topics());
     case 'score':
       return MaterialPageRoute(builder: (context) => Score());
+    case 'personaje':
+      return MaterialPageRoute(builder: (context) => Character());
     default:
   }
 }

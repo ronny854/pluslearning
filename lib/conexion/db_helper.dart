@@ -20,5 +20,5 @@ Future<Database> copyDB() async {
     print('DB alredy exists');
   }
   //print(path);
-  return await openDatabase(path, readOnly: true);
+  return await openDatabase(path, readOnly: false);
 }

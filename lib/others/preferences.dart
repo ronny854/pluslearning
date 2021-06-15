@@ -1,5 +1,4 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:learning_appfinal/others/constans.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Preferences {
@@ -17,11 +16,11 @@ class Preferences {
     this._prefs = await SharedPreferences.getInstance();
   }
 
-  get scoreTVocabulary {
-    return _prefs.get('scoreTVocabulary' ?? 0);
+  get personajeSeleccionado {
+    return _prefs.getString('personaje_select') ?? Personaje_1;
   }
 
-  set scoreTVocabulary(int value) {
-    _prefs.setInt('scoreTVocabulary', value);
+  set personajeSeleccionado(String value) {
+    _prefs.setString('personaje_select', value);
   }
 }

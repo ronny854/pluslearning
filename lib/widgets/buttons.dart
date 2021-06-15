@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:learning_appfinal/others/constans.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 Widget botonMenu(String titulo, String nextPage, BuildContext context) {
+  var _media = MediaQuery.of(context).size;
+  double _sizeText = _media.height * 0.065;
   return Container(
+    padding: EdgeInsets.only(left: _media.width * 0.01),
     child: GestureDetector(
       onTap: () => Navigator.pushNamed(context, nextPage),
       //onTap: () => null,
@@ -11,16 +15,20 @@ Widget botonMenu(String titulo, String nextPage, BuildContext context) {
         children: [
           Image.asset(
             Boton1,
-            height: 50.0,
-            width: 250.0,
-            fit: BoxFit.contain,
+            height: _media.height * 0.12,
+            width: _media.width * 0.25,
+            fit: BoxFit.fill,
           ),
           Container(
             //padding: EdgeInsets.symmetric(vertical: 15, horizontal: 100),
-            child: Text(titulo),
+            child: Text(
+              titulo,
+              style: GoogleFonts.zcoolKuaiLe(
+                  textStyle: TextStyle(color: Colors.white, fontSize: _sizeText)),
+            ),
           ),
           SizedBox(
-            height: 60.0,
+            height: _media.height * 0.14,
           ),
         ],
       ),

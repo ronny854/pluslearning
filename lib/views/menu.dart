@@ -17,11 +17,14 @@ class _MenuState extends State<Menu> {
   Widget build(BuildContext context) {
     final topicsProvider = Provider.of<TopicsProvider>(context, listen: false);
     topicsProvider.cargarTemas();
-    var media = MediaQuery.of(context).size;
-    double distancia = media.height * 0.5278;
+    var _media = MediaQuery.of(context).size;
+    double distancia = _media.height * 0.55;
+    print('altura= ${_media.height} ancho= ${_media.width}');
     return Scaffold(
       body: Container(
+        //alignment: Alignment.center,
         child: Stack(
+          //alignment: Alignment.center,
           children: [
             Container(
               child: FlareActor(
@@ -31,16 +34,40 @@ class _MenuState extends State<Menu> {
                 fit: BoxFit.cover,
               ),
             ),
-            Center(
-              child: Container(
-                padding: EdgeInsets.only(top: distancia),
-                child: Column(
-                  children: [
-                    botonMenu('Play', 'temas', context),
-                    botonMenu('Profile', 'perfil', context),
-                    botonMenu('Settings', 'conf', context),
-                  ],
-                ),
+
+            // flare actor para los personajes del juego
+/*             Container(
+              width: media.width,
+              height: media.height * 0.6,
+              child: FlareActor(
+                Personaje2,
+                animation: "prueba",
+                //alignment: Alignment.center,
+                fit: BoxFit.contain,
+              ),
+            ), */
+
+            Container(
+              padding: EdgeInsets.only(top: distancia, left: _media.width * 0.23),
+              child: Column(
+                children: [
+                  Row(
+                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      botonMenu('Play', 'temas', context),
+                      botonMenu('Profile', 'perfil', context),
+                    ],
+                  ),
+                  Row(
+                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      botonMenu('Characters', 'personaje', context),
+                      botonMenu('Settings', 'conf', context),
+                    ],
+                  )
+                ],
               ),
             ),
           ],

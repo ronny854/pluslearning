@@ -54,6 +54,7 @@ class ePreguntas extends StatelessWidget {
             dificultad: dificultad,
             damageHero: damageHero,
             damageEnemy: damageEnemy,
+            idTema: idTemaPregunta,
           );
         }
       },

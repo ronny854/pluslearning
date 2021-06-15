@@ -57,7 +57,7 @@ class _TopicsState extends State<Topics> {
                             //padding: EdgeInsets.symmetric(vertical: 15, horizontal: 100),
                             child: Text(
                               topicP[i].name,
-                              style: GoogleFonts.pattaya(
+                              style: GoogleFonts.pacifico(
                                 textStyle: TextStyle(
                                   color: Colors.white,
                                   fontSize: 60.0,

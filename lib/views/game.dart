@@ -2,13 +2,17 @@ import 'dart:async';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare_controls.dart';
 import 'package:flutter/material.dart';
+import 'package:learning_appfinal/models/pointsA_model.dart';
 //import 'package:learning_appfinal/conexion/db_helper.dart';
 import 'package:learning_appfinal/others/constans.dart';
 import 'package:learning_appfinal/models/options_model.dart';
 import 'package:learning_appfinal/models/questions_model.dart';
+import 'package:learning_appfinal/others/preferences.dart';
+import 'package:learning_appfinal/providers/points_provider.dart';
 import 'package:learning_appfinal/views/score.dart';
 import 'package:learning_appfinal/widgets/count_down.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:provider/provider.dart';
 
 /* class Game extends StatefulWidget {
   final List mydata;
@@ -25,6 +29,7 @@ class Game extends StatefulWidget {
   int dificultad;
   double damageHero;
   double damageEnemy;
+  int idTema;
   Game(
       {Key key,
       this.listQuestions,
@@ -32,31 +37,35 @@ class Game extends StatefulWidget {
       this.limitTime,
       this.dificultad,
       this.damageHero,
-      this.damageEnemy})
+      this.damageEnemy,
+      this.idTema})
       : super(key: key);
 
   @override
   _GameState createState() =>
-      _GameState(listQuestions, score, limitTime, dificultad, damageHero, damageEnemy);
+      _GameState(listQuestions, score, limitTime, dificultad, damageHero, damageEnemy, idTema);
 }
 
 class _GameState extends State<Game> with TickerProviderStateMixin {
   //controler timer
   AnimationController _controllerTimer;
-
+  final prefs = new Preferences();
   final int score;
   final int limitTime;
   final int dificultad;
   final double damageHero;
   final double damageEnemy;
+  final int idTema;
 
   final List<Question> listQuestions;
   _GameState(this.listQuestions, this.score, this.limitTime, this.dificultad, this.damageHero,
-      this.damageEnemy);
+      this.damageEnemy, this.idTema);
   int numQuestion = 0;
 
   ////////////////////////////////////////////////////////////////////////
-  String animacion = Espera;
+  //String animacion = Espera;
+  String _animacionHero = "espera";
+  String _animacionEnemy = "espera";
   final FlareControls _controlsPersonje = FlareControls();
   final FlareControls _controlsEnemigo = FlareControls();
 
@@ -67,6 +76,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   int points = 0;
   int i = 1;
   bool disableAnswer = false;
+  bool _winner = false;
   // extra varibale to iterate
   int j = 1;
 /*   int timer = 60;
@@ -112,9 +122,12 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     _controllerTimer.addListener(() {
       if (_controllerTimer.isCompleted) {
         _controllerTimer.stop();
-        animacion = Ataque;
-        _controlsEnemigo.play(animacion);
-        _controlsEnemigo.onCompleted(animacion = Espera);
+        _animacionEnemy = "ataque";
+        _animacionHero = "damage";
+        _controlsEnemigo.play(_animacionEnemy);
+        _controlsPersonje.play(_animacionHero);
+        _controlsEnemigo.onCompleted(_animacionEnemy = "espera");
+        _controlsPersonje.onCompleted(_animacionHero = "espera");
         lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
         if (lifeHero >= 0.1) {
           //print('vida: $lifeHero daño: $damageEnemy');
@@ -122,9 +135,10 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
           if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
         } else {
           lifeHero = 0.0;
+          _winner = false;
           enviarScore();
         }
-        Timer(Duration(milliseconds: 2000), nextquestion);
+        Timer(Duration(milliseconds: 4000), nextquestion);
         _controllerTimer.reset();
         _controllerTimer.forward();
       }
@@ -133,80 +147,97 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   }
 
   void checkanswer(int correctO, int posColor) {
-    _controllerTimer.stop();
     _isButtonDisabled = true;
     if (correctO == 1) {
       points = points + listQuestions[numQuestion].score;
       colortoshow = right;
-      setState(() {
-        animacion = Ataque;
-        _controlsPersonje.play(animacion);
-        _controlsPersonje.onCompleted(animacion = Espera);
-        lifeEnemy = double.parse((lifeEnemy - damageHero).toStringAsFixed(1));
-        if (lifeEnemy >= 0.1) {
-          if (lifeEnemy <= 0.6 && lifeEnemy >= 0.4) barEnemy = Colors.yellow;
-          if (lifeEnemy <= 0.4 && lifeEnemy >= 0.0) barEnemy = Colors.red;
-        } else {
-          lifeEnemy = 0.0;
-          enviarScore();
-        }
-      });
+
+      _animacionHero = "ataque";
+      _animacionEnemy = "damage";
+      _controlsPersonje.play(_animacionHero);
+      _controlsEnemigo.play(_animacionEnemy);
+      _controlsPersonje.onCompleted(_animacionHero = "espera");
+      _controlsEnemigo.onCompleted(_animacionEnemy = "espera");
+      lifeEnemy = double.parse((lifeEnemy - damageHero).toStringAsFixed(1));
+      if (lifeEnemy >= 0.1) {
+        if (lifeEnemy <= 0.6 && lifeEnemy >= 0.4) barEnemy = Colors.yellow;
+        if (lifeEnemy <= 0.4 && lifeEnemy >= 0.0) barEnemy = Colors.red;
+      } else {
+        _winner = true;
+        lifeEnemy = 0.0;
+        enviarScore();
+      }
     } else {
       colortoshow = wrong;
-      setState(() {
-        animacion = Ataque;
-        _controlsEnemigo.play(animacion);
-        _controlsEnemigo.onCompleted(animacion = Espera);
-        lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
-        if (lifeHero >= 0.1) {
-          //print('vida: $lifeHero daño: $damageEnemy');
-          if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
-          if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
-        } else {
-          lifeHero = 0.0;
-          enviarScore();
-        }
-      });
+
+      _animacionEnemy = "ataque";
+      _animacionHero = "damage";
+      _controlsEnemigo.play(_animacionEnemy);
+      _controlsPersonje.play(_animacionHero);
+      _controlsEnemigo.onCompleted(_animacionEnemy = "espera");
+      _controlsPersonje.onCompleted(_animacionHero = "espera");
+      lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
+      if (lifeHero >= 0.1) {
+        //print('vida: $lifeHero daño: $damageEnemy');
+        if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
+        if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
+      } else {
+        lifeHero = 0.0;
+        _winner = false;
+        enviarScore();
+      }
     }
 
     // applying the changed color to the particular button that was selected
+
     btncolor[posColor] = colortoshow;
     //colorboton[posColor] = colortoshow;
-    canceltimer = true;
     disableAnswer = true;
 
     // nextquestion();
-    Timer(Duration(milliseconds: 2000), nextquestion);
+
+    Timer(Duration(milliseconds: 4000), nextquestion);
     _controllerTimer.reset();
     _controllerTimer.forward();
   }
 
   void nextquestion() {
+    print(idTema);
     //canceltimer = false;
     //timer = 30;
     //questionState = false;
 
-    setState(() {
-      _isButtonDisabled = false;
-      if (numQuestion < listQuestions.length - 1) {
+    _isButtonDisabled = false;
+    if (numQuestion < listQuestions.length - 1) {
+      setState(() {
         numQuestion++;
-      } else {
-        enviarScore();
-      }
-      for (var i = 0; i < btncolor.length; i++) {
-        btncolor[i] = defaul;
-      }
-    });
+      });
+    } else {
+      enviarScore();
+    }
+    //setState(() {
+    for (var i = 0; i < btncolor.length; i++) {
+      btncolor[i] = defaul;
+    }
+    //});
+
     //starttimer();
   }
 
   Future<dynamic> enviarScore() {
+    int res = 0;
+    res = score + points;
+
     return Future.delayed(Duration(seconds: 2), () {
       //_controllerTimer.stop();
+      //PointsAModel().updateP(res, idTema);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         //print(topic.id);
+        final pointsProvider = Provider.of<PointsProvider>(context, listen: false);
+        pointsProvider.updatePoints(res, idTema);
         return Score(
           points: points,
+          winner: _winner,
         );
       }));
     });
@@ -222,7 +253,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
           children: [
             Container(
               child: Image.asset(
-                Escenario1,
+                Escenario2,
                 fit: BoxFit.cover,
                 height: media.height,
                 width: media.width,
@@ -279,10 +310,22 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
             ),
             Container(
               alignment: Alignment.topCenter,
+              width: media.width,
+              height: media.height * 0.1,
+              //padding: EdgeInsets.only(left: media.width * 0.08),
+              child: Image(
+                image: AssetImage(FondoTimer),
+                fit: BoxFit.fill,
+              ),
+            ),
+            Container(
+              alignment: Alignment.topCenter,
+              padding: EdgeInsets.only(top: media.height * 0.015),
               child: CountDown(
                 animation: StepTween(begin: limitTime, end: 0).animate(_controllerTimer),
               ),
             ),
+
 /*             Container(
               alignment: Alignment.topCenter,
               child: Text(
@@ -297,17 +340,35 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
             ), */
             // condicion if
             //score==0 ? Container() : Container(),
-            Container(
-              padding: EdgeInsets.only(top: 50.0, left: 125.0),
-              child: Text(
-                'N° ${numQuestion + 1} ' + listQuestions[numQuestion].textQ,
-                style: TextStyle(color: Colors.white, fontSize: 20.0),
-              ),
-            ),
-
+/*             Stack(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(top: 45.0, left: 50.0),
+                  child: Image.asset(
+                    FondoPreguntas,
+                    width: 590.0,
+                    height: 65.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                      top: media.height * 0.109,
+                      left: media.width * 0.095,
+                      right: media.width * 0.087),
+                  child: Text(
+                    'N° ${numQuestion + 1} ' + listQuestions[numQuestion].textQ,
+                    style: TextStyle(color: Colors.black87, fontSize: 20.0),
+                  ),
+                ),
+                listQuestions[numQuestion].typeQ == 'picture'
+                    ? imageQuestion(listQuestions[numQuestion].imgQ, true)
+                    : imageQuestion('no hay nada', false),
+              ],
+            ), */
             listQuestions[numQuestion].typeQ == 'picture'
-                ? imageQuestion(listQuestions[numQuestion].imgQ, true)
-                : imageQuestion('no hay nada', false),
+                ? _questionImage(media)
+                : _questionText(media),
             /* : Container(
                     padding: EdgeInsets.only(top: 100.0, left: 300.0),
                     child: Text('no hay nada'),
@@ -321,26 +382,26 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                 Stack(
                   children: [
                     Container(
-                      height: media.height,
+                      height: media.height * 0.99,
                       width: media.width,
-                      padding: EdgeInsets.only(top: 50.0),
+                      padding: EdgeInsets.only(top: 30.0),
+                      //alignment: Alignment.bottomCenter,
                       child: FlareActor(
-                        Personaje1,
-                        animation: animacion,
+                        Enemigo_2,
+                        animation: _animacionEnemy,
                         fit: BoxFit.contain,
-                        controller: _controlsPersonje,
+                        controller: _controlsEnemigo,
                       ),
                     ),
                     Container(
-                      height: media.height,
+                      height: media.height * 0.99,
                       width: media.width,
-                      padding: EdgeInsets.only(left: 10.0, top: 55.0),
-                      //alignment: Alignment.bottomCenter,
+                      padding: EdgeInsets.only(top: 20.0),
                       child: FlareActor(
-                        Enemigo,
-                        animation: animacion,
+                        '${prefs.personajeSeleccionado}',
+                        animation: _animacionHero,
                         fit: BoxFit.contain,
-                        controller: _controlsEnemigo,
+                        controller: _controlsPersonje,
                       ),
                     ),
                   ],
@@ -384,6 +445,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                 if (_isButtonDisabled) {
                   return null;
                 } else {
+                  _controllerTimer.stop(canceled: true);
                   return checkanswer(values[index].correctO, index);
                 }
               },
@@ -411,13 +473,79 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     );
   }
 
-  Widget imageQuestion(String img, bool visi) {
-    return Visibility(
-      visible: visi,
-      child: Container(
-        padding: EdgeInsets.only(top: 100.0, left: 300.0),
-        child: Text(img),
+  Widget _questionImage(Size media) {
+    return Container(
+      alignment: Alignment.topCenter,
+      padding: EdgeInsets.only(top: media.height * 0.11),
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          Container(
+            //padding: EdgeInsets.only(top: 45.0, left: 50.0),
+            child: Image.asset(
+              FondoPreguntas,
+              width: media.width * 0.5033,
+              height: media.height * 0.2879,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Container(
+            width: media.width * 0.5033,
+            height: media.height * 0.1579,
+            alignment: Alignment.topCenter,
+            padding: EdgeInsets.only(top: media.height * 0.01),
+            child: Text(
+              listQuestions[numQuestion].textQ,
+              style: TextStyle(color: Colors.black87, fontSize: 20.0),
+            ),
+          ),
+          Container(
+            width: media.width * 0.1,
+            height: media.height * 0.25,
+            padding: EdgeInsets.only(top: media.height * 0.074),
+            /*  padding: EdgeInsets.only(
+                top: media.height * 0.109, left: media.width * 0.095, right: media.width * 0.087), */
+            child: Image(
+              image: AssetImage(listQuestions[numQuestion].imgQ),
+              fit: BoxFit.fill,
+            ),
+          ),
+        ],
       ),
     );
   }
+
+  Widget _questionText(Size media) {
+    return Container(
+      alignment: Alignment.topCenter,
+      padding: EdgeInsets.only(top: media.height * 0.11),
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          Container(
+            //padding: EdgeInsets.only(top: 45.0, left: 50.0),
+            child: Image.asset(
+              FondoPreguntas,
+              width: media.width * 0.8633,
+              height: media.height * 0.1579,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Container(
+            width: media.width * 0.8033,
+            height: media.height * 0.1579,
+            alignment: Alignment.topCenter,
+/*             padding: EdgeInsets.only(
+                top: media.height * 0.109, left: media.width * 0.095, right: media.width * 0.087), */
+            child: Text(
+              listQuestions[numQuestion].textQ,
+              style: TextStyle(color: Colors.black87, fontSize: 20.0),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _questionSound() {}
 }

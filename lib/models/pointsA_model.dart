@@ -73,7 +73,19 @@ class PointsAModel {
   }
 
   Future<int> update(Database db, PointsA pointsA) async {
-    return await db.update(tablePointsA, pointsA.toMap(),
-        where: '$columnPointsAIdTo = ?', whereArgs: [pointsA.idTo]);
+    return await db.update(
+      tablePointsA,
+      pointsA.toMap(),
+      where: '$columnPointsAIdTo = ?',
+      whereArgs: [pointsA.idTo],
+    );
   }
+
+  Future<int> updateP(int points, int idT) async {
+    Database db = await copyDB();
+    return await db
+        .rawUpdate('''UPDATE tbl_puntosA SET puntosA_score = $points WHERE tema_id=$idT''');
+  }
+
+  Future close(Database db) async => db.close();
 }

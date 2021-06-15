@@ -13,7 +13,7 @@ class CountDown extends AnimatedWidget {
     var timerText = '${(clockTimer.inSeconds.remainder(60) % 60).toString().padLeft(2, '0')}';
     return Text(
       '$timerText',
-      style: TextStyle(fontSize: 40, color: Colors.white),
+      style: TextStyle(fontSize: 30.0, color: Colors.white),
     );
   }
 }
