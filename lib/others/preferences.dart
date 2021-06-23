@@ -23,4 +23,20 @@ class Preferences {
   set personajeSeleccionado(String value) {
     _prefs.setString('personaje_select', value);
   }
+
+  get iconPersonajeS {
+    return _prefs.getString('icon_select') ?? IconP1;
+  }
+
+  set iconPersonajeS(String value) {
+    _prefs.setString('icon_select', value);
+  }
+
+  get tutorialGame {
+    return _prefs.getBool('tutorial') ?? true;
+  }
+
+  set tutorialGame(bool stateT) {
+    _prefs.setBool('tutorial', stateT);
+  }
 }

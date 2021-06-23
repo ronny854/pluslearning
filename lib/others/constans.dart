@@ -21,6 +21,11 @@ const String IconP2 = 'assets/imagenes/iconP2.png';
 const String IconP3 = 'assets/imagenes/iconP3.png';
 const String IconP4 = 'assets/imagenes/iconP4.png';
 
+const String IconE1 = 'assets/imagenes/iconE1.png';
+const String IconE2 = 'assets/imagenes/iconE2.png';
+const String IconE3 = 'assets/imagenes/iconE3.png';
+const String IconE4 = 'assets/imagenes/iconE4.png';
+
 //preguntas
 const String P_Tema1 = 'assets/preguntas/topic_1.json';
 const String P_Tema2 = 'assets/preguntas/topic_2.json';
@@ -46,6 +51,7 @@ const String Enemigo_2 = 'assets/animaciones/enemigo2.flr';
 const String Enemigo_3 = 'assets/animaciones/enemigo3.flr';
 const String Enemigo_4 = 'assets/animaciones/enemigo4.flr';
 const String Blood = 'assets/animaciones/blood.flr';
+const String Atutorial = 'assets/animaciones/tutorial.flr';
 
 //Acciones
 const String Ataque = 'attack';
@@ -57,3 +63,6 @@ const String Escenario2 = 'assets/imagenes/escenario2.jpg';
 const String Escenario3 = 'assets/imagenes/escenario3.jpg';
 const String Escenario4 = 'assets/imagenes/escenario4.jpg';
 const String Escenario5 = 'assets/imagenes/escenario5.jpg';
+
+//imagenes recomendaciones
+const String ImagenR1 = 'assets/imgenes_recomen/present_perfect.png';

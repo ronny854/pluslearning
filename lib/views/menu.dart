@@ -1,6 +1,7 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:learning_appfinal/others/constans.dart';
+import 'package:learning_appfinal/others/preferences.dart';
 import 'package:learning_appfinal/providers/topics_provider.dart';
 import 'package:learning_appfinal/widgets/buttons.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+  final _prefs = new Preferences();
   @override
   Widget build(BuildContext context) {
     final topicsProvider = Provider.of<TopicsProvider>(context, listen: false);
@@ -55,7 +57,9 @@ class _MenuState extends State<Menu> {
                     //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     //crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      botonMenu('Play', 'temas', context),
+                      _prefs.tutorialGame == true
+                          ? botonMenu('Play', 'tutorialGame', context)
+                          : botonMenu('Play', 'temas', context),
                       botonMenu('Profile', 'perfil', context),
                     ],
                   ),

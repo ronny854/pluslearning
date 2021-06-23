@@ -81,11 +81,16 @@ class PointsAModel {
     );
   }
 
-  Future<int> updateP(int points, int idT) async {
+  Future<int> updateP(int points, int idT, int tcorrectQ, int tincorrectQ, num desem) async {
     Database db = await copyDB();
-    return await db
-        .rawUpdate('''UPDATE tbl_puntosA SET puntosA_score = $points WHERE tema_id=$idT''');
+    int consulta = await db.rawUpdate(
+        '''UPDATE tbl_puntosA SET puntosA_score = $points, puntosA_numQuesC=$tcorrectQ, puntosA_numQuesIn=$tincorrectQ, puntosA_porcentajeDesem = $desem WHERE tema_id=$idT''');
+    //closeDatabase();
+    return consulta;
   }
 
-  Future close(Database db) async => db.close();
+  Future closeDatabase() async {
+    Database db = await copyDB();
+    db.close();
+  }
 }

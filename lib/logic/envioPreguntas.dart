@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:learning_appfinal/models/questions_model.dart';
+import 'package:learning_appfinal/others/constans.dart';
 import 'package:learning_appfinal/views/game.dart';
 
 class ePreguntas extends StatelessWidget {
@@ -11,6 +14,10 @@ class ePreguntas extends StatelessWidget {
   double damageHero;
   double damageEnemy;
 
+  var escenarioJ = [Escenario1, Escenario2, Escenario3, Escenario4, Escenario5];
+  var enemigoList = [Enemigo_1, Enemigo_2, Enemigo_3, Enemigo_4];
+  var iconEnemyList = [IconE1, IconE2, IconE3, IconE4];
+
   @override
   Widget build(BuildContext context) {
 /*     final questionsProvider = Provider.of<QuestionsProvider>(context, listen: false);
@@ -19,6 +26,10 @@ class ePreguntas extends StatelessWidget {
     return Game(
       listQuestions: questions,
     ); */
+    int _enemyR = numRamdom(4);
+    int _escenarioSelect = numRamdom(5);
+    print('$_enemyR  and $_escenarioSelect');
+
     if (score >= 0 && score <= 200) {
       limitTime = 60;
       dificultad = 1;
@@ -55,10 +66,18 @@ class ePreguntas extends StatelessWidget {
             damageHero: damageHero,
             damageEnemy: damageEnemy,
             idTema: idTemaPregunta,
+            escenarioS: escenarioJ[_escenarioSelect],
+            enemySelct: enemigoList[_enemyR],
+            iconEnemy: iconEnemyList[_enemyR],
           );
         }
       },
     );
+  }
+
+  int numRamdom(int max) {
+    var random = Random();
+    return (random.nextInt(max));
   }
 
   Future<List<Question>> getQuestionByCategory(int id) async {

@@ -92,7 +92,7 @@ class _CharacterState extends State<Character> {
           image: AssetImage(icon),
           fit: BoxFit.fill,
         ),
-        onTap: () => {changeHero(personaje)},
+        onTap: () => {changeHero(personaje, icon)},
       ),
     );
   }
@@ -110,7 +110,10 @@ class _CharacterState extends State<Character> {
     );
   }
 
-  void changeHero(String personaje) {
-    setState(() => {prefs.personajeSeleccionado = personaje});
+  void changeHero(String personaje, String iconSelect) {
+    setState(() {
+      prefs.personajeSeleccionado = personaje;
+      prefs.iconPersonajeS = iconSelect;
+    });
   }
 }

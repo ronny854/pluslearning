@@ -8,7 +8,9 @@ Widget botonMenu(String titulo, String nextPage, BuildContext context) {
   return Container(
     padding: EdgeInsets.only(left: _media.width * 0.01),
     child: GestureDetector(
-      onTap: () => Navigator.pushNamed(context, nextPage),
+      onTap: () {
+        return Navigator.pushNamed(context, nextPage);
+      },
       //onTap: () => null,
       child: Stack(
         alignment: Alignment.center,
@@ -66,4 +68,14 @@ Widget botonTemas(String titulo, BuildContext context) {
       ),
     ),
   );
+}
+
+TextStyle titulosR(var _screenSize) {
+  return GoogleFonts.lobster(
+      textStyle: TextStyle(color: Colors.white, fontSize: _screenSize.width * 0.04));
+}
+
+TextStyle titulosEn(var _screenSize) {
+  return GoogleFonts.karla(
+      textStyle: TextStyle(color: Colors.white, fontSize: _screenSize.width * 0.025));
 }

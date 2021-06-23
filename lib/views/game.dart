@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare_controls.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:learning_appfinal/models/pointsA_model.dart';
 //import 'package:learning_appfinal/conexion/db_helper.dart';
 import 'package:learning_appfinal/others/constans.dart';
@@ -30,6 +31,9 @@ class Game extends StatefulWidget {
   double damageHero;
   double damageEnemy;
   int idTema;
+  String escenarioS;
+  String enemySelct;
+  String iconEnemy;
   Game(
       {Key key,
       this.listQuestions,
@@ -38,12 +42,25 @@ class Game extends StatefulWidget {
       this.dificultad,
       this.damageHero,
       this.damageEnemy,
-      this.idTema})
+      this.idTema,
+      this.escenarioS,
+      this.enemySelct,
+      this.iconEnemy})
       : super(key: key);
 
   @override
-  _GameState createState() =>
-      _GameState(listQuestions, score, limitTime, dificultad, damageHero, damageEnemy, idTema);
+  _GameState createState() => _GameState(
+        listQuestions,
+        score,
+        limitTime,
+        dificultad,
+        damageHero,
+        damageEnemy,
+        idTema,
+        escenarioS,
+        enemySelct,
+        iconEnemy,
+      );
 }
 
 class _GameState extends State<Game> with TickerProviderStateMixin {
@@ -56,10 +73,23 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   final double damageHero;
   final double damageEnemy;
   final int idTema;
+  final String escenarioS;
+  final String enemySelct;
+  final String iconEnemy;
 
   final List<Question> listQuestions;
-  _GameState(this.listQuestions, this.score, this.limitTime, this.dificultad, this.damageHero,
-      this.damageEnemy, this.idTema);
+  _GameState(
+    this.listQuestions,
+    this.score,
+    this.limitTime,
+    this.dificultad,
+    this.damageHero,
+    this.damageEnemy,
+    this.idTema,
+    this.escenarioS,
+    this.enemySelct,
+    this.iconEnemy,
+  );
   int numQuestion = 0;
 
   ////////////////////////////////////////////////////////////////////////
@@ -74,6 +104,10 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   Color wrong = Colors.red;
   Color defaul = Colors.indigo;
   int points = 0;
+
+  int questionsCorrect = 0;
+  int questionsIncorrect = 0;
+
   int i = 1;
   bool disableAnswer = false;
   bool _winner = false;
@@ -129,18 +163,23 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
         _controlsEnemigo.onCompleted(_animacionEnemy = "espera");
         _controlsPersonje.onCompleted(_animacionHero = "espera");
         lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
+        questionsIncorrect += 1;
         if (lifeHero >= 0.1) {
           //print('vida: $lifeHero daño: $damageEnemy');
-          if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
-          if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
+          setState(() {
+            if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
+            if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
+          });
         } else {
           lifeHero = 0.0;
           _winner = false;
           enviarScore();
         }
-        Timer(Duration(milliseconds: 4000), nextquestion);
-        _controllerTimer.reset();
-        _controllerTimer.forward();
+        setState(() {
+          Timer(Duration(milliseconds: 4000), nextquestion);
+          //_controllerTimer.reset();
+          //_controllerTimer.forward();
+        });
       }
     });
     _controllerTimer.forward(); //Start timer
@@ -148,8 +187,12 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
 
   void checkanswer(int correctO, int posColor) {
     _isButtonDisabled = true;
+    _controllerTimer.stop();
+    // _controllerTimer.reset();
+
     if (correctO == 1) {
       points = points + listQuestions[numQuestion].score;
+      questionsCorrect += 1;
       colortoshow = right;
 
       _animacionHero = "ataque";
@@ -160,16 +203,21 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
       _controlsEnemigo.onCompleted(_animacionEnemy = "espera");
       lifeEnemy = double.parse((lifeEnemy - damageHero).toStringAsFixed(1));
       if (lifeEnemy >= 0.1) {
-        if (lifeEnemy <= 0.6 && lifeEnemy >= 0.4) barEnemy = Colors.yellow;
-        if (lifeEnemy <= 0.4 && lifeEnemy >= 0.0) barEnemy = Colors.red;
+        setState(() {
+          if (lifeEnemy <= 0.6 && lifeEnemy >= 0.4) barEnemy = Colors.yellow;
+          if (lifeEnemy <= 0.4 && lifeEnemy >= 0.0) barEnemy = Colors.red;
+        });
       } else {
-        _winner = true;
         lifeEnemy = 0.0;
+        _controlsEnemigo.play("death");
+        _winner = true;
+
+        //_controlsEnemigo.onCompleted(name)
         enviarScore();
       }
     } else {
       colortoshow = wrong;
-
+      questionsIncorrect += 1;
       _animacionEnemy = "ataque";
       _animacionHero = "damage";
       _controlsEnemigo.play(_animacionEnemy);
@@ -179,62 +227,74 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
       lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
       if (lifeHero >= 0.1) {
         //print('vida: $lifeHero daño: $damageEnemy');
-        if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
-        if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
+        setState(() {
+          if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
+          if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
+        });
       } else {
         lifeHero = 0.0;
+        _controlsPersonje.play("death");
         _winner = false;
         enviarScore();
       }
     }
-
     // applying the changed color to the particular button that was selected
+    setState(() {
+      btncolor[posColor] = colortoshow;
+      //colorboton[posColor] = colortoshow;
+      disableAnswer = true;
+      Timer(Duration(milliseconds: 4000), nextquestion);
+      // nextquestion();
+    });
 
-    btncolor[posColor] = colortoshow;
-    //colorboton[posColor] = colortoshow;
-    disableAnswer = true;
-
-    // nextquestion();
-
-    Timer(Duration(milliseconds: 4000), nextquestion);
-    _controllerTimer.reset();
-    _controllerTimer.forward();
+    //_controllerTimer.dispose();
   }
 
   void nextquestion() {
-    print(idTema);
+    // print(idTema);
     //canceltimer = false;
     //timer = 30;
     //questionState = false;
-
+    numQuestion++;
     _isButtonDisabled = false;
-    if (numQuestion < listQuestions.length - 1) {
-      setState(() {
-        numQuestion++;
-      });
-    } else {
+/*     if (numQuestion < listQuestions.length - 1) {
+      numQuestion++;
+    } */
+    /* else {
       enviarScore();
-    }
+    } */
     //setState(() {
     for (var i = 0; i < btncolor.length; i++) {
       btncolor[i] = defaul;
     }
     //});
 
+    _controllerTimer.reset();
+    _controllerTimer.forward();
+
     //starttimer();
   }
 
   Future<dynamic> enviarScore() {
     int res = 0;
-    res = score + points;
-
+    //_controllerTimer.dispose();
     return Future.delayed(Duration(seconds: 2), () {
       //_controllerTimer.stop();
       //PointsAModel().updateP(res, idTema);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         //print(topic.id);
-        final pointsProvider = Provider.of<PointsProvider>(context, listen: false);
-        pointsProvider.updatePoints(res, idTema);
+
+        final _pointsProvider = Provider.of<PointsProvider>(context, listen: false);
+        //_pointsProvider.cargarPuntos(idTema);
+        final _pointsA = _pointsProvider.pointsA;
+        int tcorrectQ = _pointsA[0].numQuesC + questionsCorrect;
+        int tincorrectQ = _pointsA[0].numQuesIn + questionsIncorrect;
+        num desem = formatNumero((tcorrectQ) / (tcorrectQ + tincorrectQ));
+        res = _pointsA[0].scoreT + points;
+        print('desempenio = $desem');
+        //print('correct= $questionsCorrect incorrect=$questionsIncorrect');
+        //print(_pointsA[0].numQuesC);
+        _pointsProvider.updatePoints(res, idTema, tcorrectQ, tincorrectQ, desem);
         return Score(
           points: points,
           winner: _winner,
@@ -246,6 +306,8 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
+    final _pointsProvider = Provider.of<PointsProvider>(context, listen: false);
+    _pointsProvider.cargarPuntos(idTema);
 
     return Scaffold(
       body: Container(
@@ -253,7 +315,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
           children: [
             Container(
               child: Image.asset(
-                Escenario2,
+                escenarioS,
                 fit: BoxFit.cover,
                 height: media.height,
                 width: media.width,
@@ -264,7 +326,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Image.asset(
-                    IconPers,
+                    '${prefs.iconPersonajeS}',
                     fit: BoxFit.cover,
                     height: 55.0,
                     width: 55.0,
@@ -300,7 +362,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                     curve: Curves.fastOutSlowIn,
                   ),
                   Image.asset(
-                    IconPers,
+                    iconEnemy,
                     fit: BoxFit.cover,
                     height: 55.0,
                     width: 55.0,
@@ -387,7 +449,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                       padding: EdgeInsets.only(top: 30.0),
                       //alignment: Alignment.bottomCenter,
                       child: FlareActor(
-                        Enemigo_2,
+                        enemySelct,
                         animation: _animacionEnemy,
                         fit: BoxFit.contain,
                         controller: _controlsEnemigo,
@@ -445,7 +507,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                 if (_isButtonDisabled) {
                   return null;
                 } else {
-                  _controllerTimer.stop(canceled: true);
+                  //_controllerTimer.stop(canceled: true);
                   return checkanswer(values[index].correctO, index);
                 }
               },
@@ -548,4 +610,10 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   }
 
   Widget _questionSound() {}
+
+  num formatNumero(num numero) {
+    var f = NumberFormat("###.0#");
+    num n = num.parse(f.format(numero));
+    return n;
+  }
 }

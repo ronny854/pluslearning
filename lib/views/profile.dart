@@ -3,6 +3,11 @@ import 'package:learning_appfinal/others/constans.dart';
 //import 'package:learning_appfinal/others/state_manager.dart';
 import 'package:learning_appfinal/models/topics_model.dart';
 import 'package:learning_appfinal/models/pointsA_model.dart';
+import 'package:learning_appfinal/views/recomendsG.dart';
+import 'package:learning_appfinal/views/recomendsL.dart';
+import 'package:learning_appfinal/views/recomendsR.dart';
+import 'package:learning_appfinal/views/recomendsV.dart';
+import 'package:learning_appfinal/widgets/buttons.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 //import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,6 +21,7 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   int idTopics = 1;
+  String _tema = "Grammar";
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
@@ -33,12 +39,15 @@ class _ProfileState extends State<Profile> {
             children: [
               Container(
                 alignment: Alignment.topLeft,
-                padding: EdgeInsets.only(top: 50.0, left: 20.0),
+                padding: EdgeInsets.only(top: 30.0, left: 20.0),
                 child: Column(
                   children: [
-                    Text('Name player: Ronny'),
+                    Text(
+                      'Game Mode',
+                      style: titulosR(media),
+                    ),
                     SizedBox(
-                      height: 40.0,
+                      height: 20.0,
                     ),
                     Container(
                       height: 250.0,
@@ -98,6 +107,7 @@ class _ProfileState extends State<Profile> {
             onTap: () {
               setState(() {
                 idTopics = topic.id;
+                _tema = topic.name;
               });
             },
             child: Stack(
@@ -129,28 +139,13 @@ class _ProfileState extends State<Profile> {
       children: snapshot.data.map<Widget>((pointsA) {
         return Column(
           children: [
+            Text('$_tema'),
+            SizedBox(height: 20.0),
             Text('Total Score:  ${pointsA.scoreT}'),
             SizedBox(height: 20.0),
             Text('Total preguntas correctas:  ${pointsA.numQuesC}'),
             SizedBox(height: 20.0),
-            Text('preguntas incorrectas : ${pointsA.numQuesIn}'),
-            SizedBox(height: 20.0),
-            Text('preguntas desconocidas : ${pointsA.numQuesUn}'),
-            SizedBox(height: 20.0),
-            Text('Porcentaje tema'),
-            LinearPercentIndicator(
-              width: 140.0,
-              lineHeight: 14.0,
-              percent: pointsA.porcentajeTo,
-              center: Text(
-                '${pointsA.porcentajeTo * 100} %',
-                style: new TextStyle(fontSize: 12.0),
-              ),
-              trailing: Icon(Icons.mood),
-              linearStrokeCap: LinearStrokeCap.roundAll,
-              backgroundColor: Colors.grey,
-              progressColor: Colors.blue,
-            ),
+            Text('Total preguntas incorrectas : ${pointsA.numQuesIn}'),
             SizedBox(height: 20.0),
             Text('desempeño tema'),
             LinearPercentIndicator(
@@ -166,6 +161,61 @@ class _ProfileState extends State<Profile> {
               backgroundColor: Colors.grey,
               progressColor: Colors.blue,
             ),
+            pointsA.idTo == 1
+                ? Container(
+                    child: MaterialButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RecomendsG(),
+                            ));
+                      },
+                      child: Text('Recomends'),
+                    ),
+                  )
+                : pointsA.idTo == 2
+                    ? Container(
+                        child: MaterialButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RecomendsR(),
+                                ));
+                          },
+                          child: Text('Recomends'),
+                        ),
+                      )
+                    : pointsA.idTo == 3
+                        ? Container(
+                            child: MaterialButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => RecomendsL(),
+                                    ));
+                              },
+                              child: Text('Recomends'),
+                            ),
+                          )
+                        : pointsA.idTo == 4
+                            ? Container(
+                                child: MaterialButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => RecomendsV(),
+                                        ));
+                                  },
+                                  child: Text('Recomends'),
+                                ),
+                              )
+                            : Container(
+                                child: Text('nada'),
+                              ),
           ],
         );
       }).toList(),
