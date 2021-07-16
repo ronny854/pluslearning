@@ -61,13 +61,44 @@ class QuestionModel {
           columnQuestionScore,
           columnQuestionState,
         ],
-        where: '$columnQuestionIdTopic=? and $columnQuestionState=?',
-        whereArgs: [id, 1],
-        limit: 10,
+        where: '$columnQuestionIdTopic=?',
+        whereArgs: [id],
+        //limit: 10,
         orderBy: 'Random()');
     if (maps.length > 0) return maps.map((question) => Question.fromMap(question)).toList();
     return null;
   }
+
+  Future<List<Question>> getQuestionByDificulty(int id, int dificulty) async {
+    Database db = await copyDB();
+    var maps = await db.query(tableQuestion,
+        columns: [
+          columnQuestionId,
+          columnQuestionIdTopic,
+          columnQuestionText,
+          columnQuestionType,
+          columnQuestionImg,
+          columnQuestionSnd,
+          columnQuestionDifficulty,
+          columnQuestionScore,
+          columnQuestionState,
+        ],
+        where: '$columnQuestionIdTopic=? and $columnQuestionDifficulty=?',
+        whereArgs: [id, dificulty],
+        //limit: 10,
+        orderBy: 'Random()');
+    if (maps.length > 0) return maps.map((question) => Question.fromMap(question)).toList();
+    return null;
+  }
+
+  /* Future<List<Question>> getQuestionByDificulty(int idT, int dificulty) async {
+    Database db = await copyDB();
+    var maps = await db.rawQuery(
+        '''SELECT * from tbl_pregunta where tbl_pregunta.tema_id =$idT and tbl_pregunta.pregunta_dificultad = $dificulty''');
+    //closeDatabase();
+    if (maps.length > 0) return maps.map((question) => Question.fromMap(question)).toList();
+    return null;
+  } */
 }
 
 /* class QuestionList extends StateNotifier<List<Question>> {

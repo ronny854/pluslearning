@@ -9,6 +9,7 @@ Widget botonMenu(String titulo, String nextPage, BuildContext context) {
     padding: EdgeInsets.only(left: _media.width * 0.01),
     child: GestureDetector(
       onTap: () {
+        print('entro');
         return Navigator.pushNamed(context, nextPage);
       },
       //onTap: () => null,
@@ -45,6 +46,7 @@ Widget botonTemas(String titulo, BuildContext context) {
 /*         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => EnviarPreguntas(titulo),
         )); */
+
         Navigator.pushNamed(context, 'juego');
       },
       //onTap: () => null,

@@ -53,7 +53,9 @@ class ePreguntas extends StatelessWidget {
     }
 
     return FutureBuilder<List<Question>>(
-      future: getQuestionByCategory(idTemaPregunta),
+      future: dificultad == 4
+          ? getQuestionByCategory(idTemaPregunta)
+          : getQuestionByDificulty(idTemaPregunta, dificultad),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData) {
           return CircularProgressIndicator();
@@ -80,8 +82,14 @@ class ePreguntas extends StatelessWidget {
     return (random.nextInt(max));
   }
 
-  Future<List<Question>> getQuestionByCategory(int id) async {
-    var result = await QuestionModel().getQuestionCategoryById(id);
+  Future<List<Question>> getQuestionByCategory(int idTemaPregunta) async {
+    var result = await QuestionModel().getQuestionCategoryById(idTemaPregunta);
+
+    return result;
+  }
+
+  Future<List<Question>> getQuestionByDificulty(int idTemaPregunta, int dificulty) async {
+    var result = await QuestionModel().getQuestionByDificulty(idTemaPregunta, dificulty);
 
     return result;
   }

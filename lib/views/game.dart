@@ -3,12 +3,12 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:learning_appfinal/models/pointsA_model.dart';
 //import 'package:learning_appfinal/conexion/db_helper.dart';
 import 'package:learning_appfinal/others/constans.dart';
 import 'package:learning_appfinal/models/options_model.dart';
 import 'package:learning_appfinal/models/questions_model.dart';
 import 'package:learning_appfinal/others/preferences.dart';
+//import 'package:learning_appfinal/providers/options_provider.dart';
 import 'package:learning_appfinal/providers/points_provider.dart';
 import 'package:learning_appfinal/views/score.dart';
 import 'package:learning_appfinal/widgets/count_down.dart';
@@ -66,6 +66,7 @@ class Game extends StatefulWidget {
 class _GameState extends State<Game> with TickerProviderStateMixin {
   //controler timer
   AnimationController _controllerTimer;
+
   final prefs = new Preferences();
   final int score;
   final int limitTime;
@@ -99,10 +100,10 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   final FlareControls _controlsPersonje = FlareControls();
   final FlareControls _controlsEnemigo = FlareControls();
 
-  Color colortoshow = Colors.indigoAccent;
-  Color right = Colors.green;
-  Color wrong = Colors.red;
-  Color defaul = Colors.indigo;
+  Color colortoshow = Colors.indigo;
+  Color right = Colors.green; //verde
+  Color wrong = Colors.red; // rojo
+  Color defaul = Colors.indigo[400];
   int points = 0;
 
   int questionsCorrect = 0;
@@ -118,28 +119,31 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   //var random_array;
 
   Map<int, Color> btncolor = {
-    0: Colors.indigoAccent,
-    1: Colors.indigoAccent,
-    2: Colors.indigoAccent,
-    3: Colors.indigoAccent,
-    4: Colors.indigoAccent,
-    5: Colors.indigoAccent,
-    6: Colors.indigoAccent,
-    7: Colors.indigoAccent,
+    0: Colors.indigo[400],
+    1: Colors.indigo[400],
+    2: Colors.indigo[400],
+    3: Colors.indigo[400],
+    4: Colors.indigo[400],
+    5: Colors.indigo[400],
+    6: Colors.indigo[400],
+    7: Colors.indigo[400],
   };
 
   bool canceltimer = false;
   bool questionState = false;
-  bool optionState = false;
+  bool _optionState = true;
   bool _isButtonDisabled;
   double lifeHero = 1.0;
   double lifeEnemy = 1.0;
+  AsyncSnapshot _snapshotOp;
   Color barHero = Colors.green;
   Color barEnemy = Colors.green;
   //int dificultad = 1;
   //double damageHero = 0.2;
   //double damageEnemy = 0.2;
-
+  double _withImg;
+  double _heighImg;
+  bool _dobleTapImg = false;
   @override
   void dispose() {
     if (_controllerTimer.isAnimating || _controllerTimer.isCompleted) {
@@ -155,99 +159,101 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     _controllerTimer = AnimationController(vsync: this, duration: Duration(seconds: limitTime));
     _controllerTimer.addListener(() {
       if (_controllerTimer.isCompleted) {
-        _controllerTimer.stop();
-        _animacionEnemy = "ataque";
-        _animacionHero = "damage";
-        _controlsEnemigo.play(_animacionEnemy);
-        _controlsPersonje.play(_animacionHero);
-        _controlsEnemigo.onCompleted(_animacionEnemy = "espera");
-        _controlsPersonje.onCompleted(_animacionHero = "espera");
-        lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
-        questionsIncorrect += 1;
-        if (lifeHero >= 0.1) {
-          //print('vida: $lifeHero daño: $damageEnemy');
+        if (this.mounted) {
           setState(() {
-            if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
-            if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
+            _controllerTimer.stop();
+            _animacionEnemy = "ataque";
+            _animacionHero = "damage";
+            _controlsEnemigo.play(_animacionEnemy);
+            _controlsPersonje.play(_animacionHero);
+            _controlsEnemigo.onCompleted(_animacionEnemy = "espera");
+            _controlsPersonje.onCompleted(_animacionHero = "espera");
+            lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
+            questionsIncorrect += 1;
+            if (lifeHero >= 0.1) {
+              //print('vida: $lifeHero daño: $damageEnemy');
+              if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow; //amarillo
+              if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
+            } else {
+              lifeHero = 0.0;
+              _winner = false;
+              enviarScore();
+            }
+            Timer(Duration(milliseconds: 4000), nextquestion);
+            //_controllerTimer.reset();
+            //_controllerTimer.forward();
           });
-        } else {
-          lifeHero = 0.0;
-          _winner = false;
-          enviarScore();
         }
-        setState(() {
-          Timer(Duration(milliseconds: 4000), nextquestion);
-          //_controllerTimer.reset();
-          //_controllerTimer.forward();
-        });
       }
     });
     _controllerTimer.forward(); //Start timer
   }
 
   void checkanswer(int correctO, int posColor) {
-    _isButtonDisabled = true;
-    _controllerTimer.stop();
-    // _controllerTimer.reset();
+    _optionState = false;
+    if (this.mounted) {
+      setState(() {
+        _isButtonDisabled = true;
+        _controllerTimer.stop();
+        // _controllerTimer.reset();
 
-    if (correctO == 1) {
-      points = points + listQuestions[numQuestion].score;
-      questionsCorrect += 1;
-      colortoshow = right;
+        if (correctO == 1) {
+          points = points + listQuestions[numQuestion].score;
+          questionsCorrect += 1;
+          colortoshow = right;
 
-      _animacionHero = "ataque";
-      _animacionEnemy = "damage";
-      _controlsPersonje.play(_animacionHero);
-      _controlsEnemigo.play(_animacionEnemy);
-      _controlsPersonje.onCompleted(_animacionHero = "espera");
-      _controlsEnemigo.onCompleted(_animacionEnemy = "espera");
-      lifeEnemy = double.parse((lifeEnemy - damageHero).toStringAsFixed(1));
-      if (lifeEnemy >= 0.1) {
-        setState(() {
-          if (lifeEnemy <= 0.6 && lifeEnemy >= 0.4) barEnemy = Colors.yellow;
-          if (lifeEnemy <= 0.4 && lifeEnemy >= 0.0) barEnemy = Colors.red;
-        });
-      } else {
-        lifeEnemy = 0.0;
-        _controlsEnemigo.play("death");
-        _winner = true;
+          _animacionHero = "ataque";
+          _animacionEnemy = "damage";
+          _controlsPersonje.play(_animacionHero);
+          _controlsEnemigo.play(_animacionEnemy);
+          _controlsPersonje.onCompleted(_animacionHero = "espera");
+          _controlsEnemigo.onCompleted(_animacionEnemy = "espera");
+          lifeEnemy = double.parse((lifeEnemy - damageHero).toStringAsFixed(1));
+          if (lifeEnemy >= 0.1) {
+            if (lifeEnemy <= 0.6 && lifeEnemy >= 0.4) barEnemy = Colors.yellow;
+            if (lifeEnemy <= 0.4 && lifeEnemy >= 0.0) barEnemy = Colors.red;
+          } else {
+            lifeEnemy = 0.0;
+            _controlsEnemigo.play("death");
+            _winner = true;
 
-        //_controlsEnemigo.onCompleted(name)
-        enviarScore();
-      }
-    } else {
-      colortoshow = wrong;
-      questionsIncorrect += 1;
-      _animacionEnemy = "ataque";
-      _animacionHero = "damage";
-      _controlsEnemigo.play(_animacionEnemy);
-      _controlsPersonje.play(_animacionHero);
-      _controlsEnemigo.onCompleted(_animacionEnemy = "espera");
-      _controlsPersonje.onCompleted(_animacionHero = "espera");
-      lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
-      if (lifeHero >= 0.1) {
-        //print('vida: $lifeHero daño: $damageEnemy');
-        setState(() {
-          if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
-          if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
-        });
-      } else {
-        lifeHero = 0.0;
-        _controlsPersonje.play("death");
-        _winner = false;
-        enviarScore();
-      }
+            //_controlsEnemigo.onCompleted(name)
+            enviarScore();
+          }
+        } else {
+          colortoshow = wrong;
+          questionsIncorrect += 1;
+          _animacionEnemy = "ataque";
+          _animacionHero = "damage";
+          _controlsEnemigo.play(_animacionEnemy);
+          _controlsPersonje.play(_animacionHero);
+          _controlsEnemigo.onCompleted(_animacionEnemy = "espera");
+          _controlsPersonje.onCompleted(_animacionHero = "espera");
+          lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
+          if (lifeHero >= 0.1) {
+            //print('vida: $lifeHero daño: $damageEnemy');
+            if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
+            if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
+          } else {
+            lifeHero = 0.0;
+            _controlsPersonje.play("death");
+            _winner = false;
+            enviarScore();
+          }
+        }
+        // applying the changed color to the particular button that was selected
+        //setState(() {
+        btncolor[posColor] = colortoshow;
+        //colorboton[posColor] = colortoshow;
+        disableAnswer = true;
+        Timer(Duration(milliseconds: 4000), nextquestion);
+
+        // nextquestion();
+        //});
+
+        //_controllerTimer.dispose();
+      });
     }
-    // applying the changed color to the particular button that was selected
-    setState(() {
-      btncolor[posColor] = colortoshow;
-      //colorboton[posColor] = colortoshow;
-      disableAnswer = true;
-      Timer(Duration(milliseconds: 4000), nextquestion);
-      // nextquestion();
-    });
-
-    //_controllerTimer.dispose();
   }
 
   void nextquestion() {
@@ -257,17 +263,23 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     //questionState = false;
     numQuestion++;
     _isButtonDisabled = false;
+    _optionState = true;
 /*     if (numQuestion < listQuestions.length - 1) {
       numQuestion++;
     } */
     /* else {
       enviarScore();
     } */
-    //setState(() {
-    for (var i = 0; i < btncolor.length; i++) {
-      btncolor[i] = defaul;
+    if (this.mounted) {
+      setState(() {
+        for (var i = 0; i < btncolor.length; i++) {
+          btncolor[i] = defaul;
+        }
+      });
     }
-    //});
+/*       for (var i = 0; i < btncolor.length; i++) {
+        btncolor[i] = defaul;
+      } */
 
     _controllerTimer.reset();
     _controllerTimer.forward();
@@ -281,20 +293,20 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     return Future.delayed(Duration(seconds: 2), () {
       //_controllerTimer.stop();
       //PointsAModel().updateP(res, idTema);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        //print(topic.id);
+      //print(topic.id);
 
-        final _pointsProvider = Provider.of<PointsProvider>(context, listen: false);
-        //_pointsProvider.cargarPuntos(idTema);
-        final _pointsA = _pointsProvider.pointsA;
-        int tcorrectQ = _pointsA[0].numQuesC + questionsCorrect;
-        int tincorrectQ = _pointsA[0].numQuesIn + questionsIncorrect;
-        num desem = formatNumero((tcorrectQ) / (tcorrectQ + tincorrectQ));
-        res = _pointsA[0].scoreT + points;
-        print('desempenio = $desem');
-        //print('correct= $questionsCorrect incorrect=$questionsIncorrect');
-        //print(_pointsA[0].numQuesC);
-        _pointsProvider.updatePoints(res, idTema, tcorrectQ, tincorrectQ, desem);
+      final _pointsProvider = Provider.of<PointsProvider>(context, listen: false);
+      //_pointsProvider.cargarPuntos(idTema);
+      final _pointsA = _pointsProvider.pointsA;
+      int tcorrectQ = _pointsA[0].numQuesC + questionsCorrect;
+      int tincorrectQ = _pointsA[0].numQuesIn + questionsIncorrect;
+      num desem = formatNumero((tcorrectQ) / (tcorrectQ + tincorrectQ));
+      res = _pointsA[0].scoreT + points;
+      print('desempenio = $desem');
+      //print('correct= $questionsCorrect incorrect=$questionsIncorrect');
+      //print(_pointsA[0].numQuesC);
+      _pointsProvider.updatePoints(res, idTema, tcorrectQ, tincorrectQ, desem);
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
         return Score(
           points: points,
           winner: _winner,
@@ -312,6 +324,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     return Scaffold(
       body: Container(
         child: Stack(
+          alignment: AlignmentDirectional.topStart,
           children: [
             Container(
               child: Image.asset(
@@ -370,6 +383,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                 ],
               ),
             ),
+
             Container(
               alignment: Alignment.topCenter,
               width: media.width,
@@ -428,9 +442,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                     : imageQuestion('no hay nada', false),
               ],
             ), */
-            listQuestions[numQuestion].typeQ == 'picture'
-                ? _questionImage(media)
-                : _questionText(media),
+
             /* : Container(
                     padding: EdgeInsets.only(top: 100.0, left: 300.0),
                     child: Text('no hay nada'),
@@ -439,66 +451,98 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                     visible: true,
                     child: Container(),
                   ), */
-            Row(
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      height: media.height * 0.99,
-                      width: media.width,
-                      padding: EdgeInsets.only(top: 30.0),
-                      //alignment: Alignment.bottomCenter,
-                      child: FlareActor(
-                        enemySelct,
-                        animation: _animacionEnemy,
-                        fit: BoxFit.contain,
-                        controller: _controlsEnemigo,
+
+            Container(
+              child: Row(
+                children: [
+                  Stack(
+                    children: [
+                      Container(
+                        height: media.height * 0.99,
+                        width: media.width,
+                        padding: EdgeInsets.only(top: 30.0),
+                        //alignment: Alignment.bottomCenter,
+                        child: FlareActor(
+                          enemySelct,
+                          animation: _animacionEnemy,
+                          fit: BoxFit.contain,
+                          controller: _controlsEnemigo,
+                        ),
                       ),
-                    ),
-                    Container(
-                      height: media.height * 0.99,
-                      width: media.width,
-                      padding: EdgeInsets.only(top: 20.0),
-                      child: FlareActor(
-                        '${prefs.personajeSeleccionado}',
-                        animation: _animacionHero,
-                        fit: BoxFit.contain,
-                        controller: _controlsPersonje,
+                      Container(
+                        height: media.height * 0.99,
+                        width: media.width,
+                        padding: EdgeInsets.only(top: 20.0),
+                        child: FlareActor(
+                          '${prefs.personajeSeleccionado}',
+                          animation: _animacionHero,
+                          fit: BoxFit.contain,
+                          controller: _controlsPersonje,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            //newMethod(context),
+            Visibility(
+              visible: _optionState,
+              child: Container(
+                padding: EdgeInsets.only(top: 260.0),
+                child: FutureBuilder(
+                  future: getOptionQuestion(listQuestions[numQuestion].id),
+                  initialData: [],
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    _snapshotOp = snapshot;
+                    return optionWidget(context);
+                  },
                 ),
-              ],
+              ),
             ),
             Container(
-              padding: EdgeInsets.only(top: 260.0),
-              child: FutureBuilder(
-                future: getOptionQuestion(listQuestions[numQuestion].id),
-                initialData: [],
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  return optionWidget(context, snapshot);
-                },
-              ),
-            )
+              child: listQuestions[numQuestion].typeQ == 'picture'
+                  ? _questionImage(media)
+                  : _questionText(media),
+            ),
           ],
         ),
       ),
     );
   }
 
+/*   Container newMethod(BuildContext context) {
+    final _optionsProvider = Provider.of<OptionsProvider>(context, listen: false);
+    _optionsProvider.cargarOpcionesPregunta(listQuestions[numQuestion].id);
+    final _op = _optionsProvider.options;
+    return Container(
+      padding: EdgeInsets.only(top: 200.0, left: 150),
+      child: ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: _op == null ? 0 : _op.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Text(_op[index].textO);
+        },
+      ),
+    );
+  } */
+
   Future<List<Option>> getOptionQuestion(int id) async {
     var result = await OptionModel().getOptionQuestionById(id);
     return result;
   }
 
-  Widget optionWidget(BuildContext context, AsyncSnapshot snapshot) {
-    var values = snapshot.data;
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: values == null ? 0 : values.length,
-      itemBuilder: (BuildContext context, int index) {
-        //print(index);
-        if (optionState == false) {
+  Widget optionWidget(BuildContext context) {
+    //var values = snapshot.data;
+    var values = _snapshotOp.data;
+
+    return Container(
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: values == null ? 0 : values.length,
+        itemBuilder: (BuildContext context, int index) {
+          //print(index);
+
           return Container(
             padding: EdgeInsets.all(10.0),
             alignment: Alignment.center,
@@ -515,27 +559,27 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
               child: Text(
                 values[index].textO,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black87,
                   fontFamily: "Alike",
                   fontSize: 16.0,
                 ),
                 maxLines: 1,
               ),
               color: btncolor[index],
-              splashColor: Colors.indigo[700],
-              highlightColor: Colors.indigo[700],
+              splashColor: Colors.indigo,
+              highlightColor: Colors.indigo[400],
               minWidth: 200.0,
               height: 45.0,
             ),
           );
-        } else {
-          return CircularProgressIndicator();
-        }
-      },
+        },
+      ),
     );
   }
 
   Widget _questionImage(Size media) {
+    //_withImg = media.width * 0.15;
+    //_heighImg = media.height * 0.2;
     return Container(
       alignment: Alignment.topCenter,
       padding: EdgeInsets.only(top: media.height * 0.11),
@@ -562,15 +606,43 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
             ),
           ),
           Container(
-            width: media.width * 0.1,
-            height: media.height * 0.25,
+            alignment: FractionalOffset.center,
+            //height: media.height * 0.25,
+            //width: media.width * 0.1,
             padding: EdgeInsets.only(top: media.height * 0.074),
             /*  padding: EdgeInsets.only(
-                top: media.height * 0.109, left: media.width * 0.095, right: media.width * 0.087), */
-            child: Image(
-              image: AssetImage(listQuestions[numQuestion].imgQ),
-              fit: BoxFit.fill,
+                            top: media.height * 0.109, left: media.width * 0.095, right: media.width * 0.087), */
+
+            //behavior: HitTestBehavior.translucent,
+            child: GestureDetector(
+              onDoubleTap: () {
+                if (_dobleTapImg) {
+                  setState(() {
+                    _withImg = media.width;
+                    _heighImg = media.height;
+                    _dobleTapImg = false;
+                    print('emtrp');
+                  });
+                } else {
+                  setState(() {
+                    _withImg = media.width * 0.15;
+                    _heighImg = media.height * 0.2;
+                    _dobleTapImg = true;
+                  });
+                }
+              },
+              child: Image.asset(
+                listQuestions[numQuestion].imgQ,
+                width: _withImg,
+                height: _heighImg,
+                fit: BoxFit.fill,
+              ),
             ),
+
+/*                               child: Image(
+                              image: AssetImage(listQuestions[numQuestion].imgQ),
+                              fit: BoxFit.fill,
+                            ), */
           ),
         ],
       ),
@@ -615,5 +687,9 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     var f = NumberFormat("###.0#");
     num n = num.parse(f.format(numero));
     return n;
+  }
+
+  void _condion() {
+    print('entro');
   }
 }

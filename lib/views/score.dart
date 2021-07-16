@@ -29,7 +29,9 @@ class Score extends StatelessWidget {
                   MaterialButton(
                     onPressed: () {
                       //return Navigator.pushReplacementNamed(context, "temas");
-                      return Navigator.of(context).pop();
+                      //return Navigator.of(context).pop();
+                      Navigator.pop(context);
+                      Navigator.pop(context);
                     },
                     child: Text('Continue'),
                   ),
