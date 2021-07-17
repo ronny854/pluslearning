@@ -14,6 +14,7 @@ import 'package:learning_appfinal/views/score.dart';
 import 'package:learning_appfinal/widgets/count_down.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
 
 /* class Game extends StatefulWidget {
   final List mydata;
@@ -144,10 +145,17 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   double _withImg;
   double _heighImg;
   bool _dobleTapImg = false;
+
+  ////audio player
+  bool _play = false;
+  AnimationController audioAnimation;
+  final assetsAudioPlayer = AssetsAudioPlayer();
+
   @override
   void dispose() {
+    this.assetsAudioPlayer.dispose();
     if (_controllerTimer.isAnimating || _controllerTimer.isCompleted) {
-      _controllerTimer.dispose();
+      this._controllerTimer.dispose();
       super.dispose();
     }
   }
@@ -155,7 +163,9 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   @override
   void initState() {
     _isButtonDisabled = false;
+
     super.initState();
+
     _controllerTimer = AnimationController(vsync: this, duration: Duration(seconds: limitTime));
     _controllerTimer.addListener(() {
       if (_controllerTimer.isCompleted) {
@@ -193,6 +203,8 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     _optionState = false;
     if (this.mounted) {
       setState(() {
+        _play = false;
+        //assetsAudioPlayer.stop();
         _isButtonDisabled = true;
         _controllerTimer.stop();
         // _controllerTimer.reset();
@@ -283,6 +295,9 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
 
     _controllerTimer.reset();
     _controllerTimer.forward();
+    audioAnimation.reverse();
+
+    _play = false;
 
     //starttimer();
   }
@@ -503,7 +518,9 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
             Container(
               child: listQuestions[numQuestion].typeQ == 'picture'
                   ? _questionImage(media)
-                  : _questionText(media),
+                  : listQuestions[numQuestion].typeQ == 'audio'
+                      ? _questionSound(media)
+                      : _questionText(media),
             ),
           ],
         ),
@@ -681,7 +698,77 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     );
   }
 
-  Widget _questionSound() {}
+  Widget _questionSound(Size media) {
+    return Container(
+      alignment: Alignment.topCenter,
+      padding: EdgeInsets.only(top: media.height * 0.11),
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          Container(
+            //padding: EdgeInsets.only(top: 45.0, left: 50.0),
+            child: Image.asset(
+              FondoPreguntas,
+              width: media.width * 0.8633,
+              height: media.height * 0.1579,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Container(
+            width: media.width * 0.8033,
+            height: media.height * 0.1579,
+            alignment: Alignment.topCenter,
+/*             padding: EdgeInsets.only(
+                top: media.height * 0.109, left: media.width * 0.095, right: media.width * 0.087), */
+            child: Text(
+              listQuestions[numQuestion].textQ,
+              style: TextStyle(color: Colors.black87, fontSize: 20.0),
+            ),
+          ),
+          Container(
+            //width: media.width * 0.8033,
+            //height: media.height * 0.1579,
+            padding: EdgeInsets.only(top: media.height * 0.09),
+            alignment: Alignment.topCenter,
+/*             padding: EdgeInsets.only(
+                top: media.height * 0.109, left: media.width * 0.095, right: media.width * 0.087), */
+            child: AudioWidget.assets(
+              path: listQuestions[numQuestion].sndQ,
+              play: _play,
+              child: FloatingActionButton(
+                  backgroundColor: _play ? Colors.red : Colors.green,
+                  child: _play ? Icon(Icons.pause) : Icon(Icons.play_arrow),
+/*                   child: Text(
+                    _play ? "pause" : "play",
+                  ), */
+                  onPressed: () {
+                    setState(() {
+                      _play = !_play;
+                    });
+                    if (_play) {
+                      _controllerTimer.stop();
+                    } else {
+                      _controllerTimer.forward();
+                    }
+                  }),
+              onReadyToPlay: (duration) {
+                //onReadyToPlay
+              },
+              onPositionChanged: (current, duration) {
+                //onPositionChanged
+              },
+              onFinished: () {
+                setState(() {
+                  _play = false;
+                });
+                _controllerTimer.forward();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   num formatNumero(num numero) {
     var f = NumberFormat("###.0#");
