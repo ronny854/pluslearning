@@ -26,6 +26,8 @@ const String IconE2 = 'assets/imagenes/iconE2.png';
 const String IconE3 = 'assets/imagenes/iconE3.png';
 const String IconE4 = 'assets/imagenes/iconE4.png';
 
+const String IconPBloqueado = 'assets/imagenes/iconPBloqueado.png';
+
 //preguntas
 const String P_Tema1 = 'assets/preguntas/topic_1.json';
 const String P_Tema2 = 'assets/preguntas/topic_2.json';

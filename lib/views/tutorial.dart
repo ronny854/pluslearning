@@ -2,7 +2,7 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_views_flutter/intro_views_flutter.dart';
 import 'package:learning_appfinal/others/constans.dart';
-import 'package:learning_appfinal/others/preferences.dart';
+//import 'package:learning_appfinal/others/preferences.dart';
 import 'package:learning_appfinal/views/topics.dart';
 
 class Tutorial extends StatefulWidget {
@@ -13,7 +13,7 @@ class Tutorial extends StatefulWidget {
 }
 
 class _TutorialState extends State<Tutorial> {
-  final _prefs = new Preferences();
+  //final _prefs = new Preferences();
   final _pages = [
     //1
     PageViewModel(
@@ -174,9 +174,7 @@ class _TutorialState extends State<Tutorial> {
       showNextButton: true,
       showBackButton: true,
       onTapDoneButton: () {
-        setState(() {
-          _prefs.tutorialGame = false;
-        });
+        //Navigator.pop(context);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => Topics()),

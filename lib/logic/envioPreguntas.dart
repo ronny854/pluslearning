@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:learning_appfinal/models/questions_model.dart';
 import 'package:learning_appfinal/others/constans.dart';
+import 'package:learning_appfinal/others/preferences.dart';
 import 'package:learning_appfinal/views/game.dart';
 
 class ePreguntas extends StatelessWidget {
@@ -13,7 +14,7 @@ class ePreguntas extends StatelessWidget {
   int dificultad;
   double damageHero;
   double damageEnemy;
-
+  final prefs = new Preferences();
   var escenarioJ = [Escenario1, Escenario2, Escenario3, Escenario4, Escenario5];
   var enemigoList = [Enemigo_1, Enemigo_2, Enemigo_3, Enemigo_4];
   var iconEnemyList = [IconE1, IconE2, IconE3, IconE4];
@@ -53,9 +54,17 @@ class ePreguntas extends StatelessWidget {
     }
 
     return FutureBuilder<List<Question>>(
-      future: dificultad == 4
-          ? getQuestionByCategory(idTemaPregunta)
-          : getQuestionByDificulty(idTemaPregunta, dificultad),
+      future: idTemaPregunta == 1 && prefs.calibrateGrammar == false
+          ? getQuestionByCalibrate(idTemaPregunta)
+          : idTemaPregunta == 2 && prefs.calibrateReading == false
+              ? getQuestionByCalibrate(idTemaPregunta)
+              : idTemaPregunta == 3 && prefs.calibrateListening == false
+                  ? getQuestionByCalibrate(idTemaPregunta)
+                  : idTemaPregunta == 4 && prefs.calibrateVocabulary == false
+                      ? getQuestionByCalibrate(idTemaPregunta)
+                      : dificultad == 4
+                          ? getQuestionByCategory(idTemaPregunta)
+                          : getQuestionByDificulty(idTemaPregunta, dificultad),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData) {
           return CircularProgressIndicator();
@@ -90,6 +99,12 @@ class ePreguntas extends StatelessWidget {
 
   Future<List<Question>> getQuestionByDificulty(int idTemaPregunta, int dificulty) async {
     var result = await QuestionModel().getQuestionByDificulty(idTemaPregunta, dificulty);
+
+    return result;
+  }
+
+  Future<List<Question>> getQuestionByCalibrate(int idTemaPregunta) async {
+    var result = await QuestionModel().getQuestionByCalibrate(idTemaPregunta);
 
     return result;
   }

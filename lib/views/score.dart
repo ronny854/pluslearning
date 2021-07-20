@@ -5,6 +5,7 @@ class Score extends StatelessWidget {
   Score({Key key, this.points, this.winner}) : super(key: key);
   int points;
   bool winner;
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;

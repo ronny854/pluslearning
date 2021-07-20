@@ -13,6 +13,8 @@ class Character extends StatefulWidget {
 
 class _CharacterState extends State<Character> {
   final prefs = new Preferences();
+  String _textoD = "";
+  bool _isBlock = false;
   //String _personajeSelect = prefs.personajeSeleccionado;
 
   @override
@@ -43,7 +45,7 @@ class _CharacterState extends State<Character> {
               ),
             ),
 
-            _characterSelect(_screenSize),
+            _isBlock == true ? _pressSelect(_screenSize) : _characterSelect(_screenSize),
 
             Container(
               padding:
@@ -61,14 +63,23 @@ class _CharacterState extends State<Character> {
                 children: [
                   Row(
                     children: [
-                      _buttonCharacter(_screenSize, Personaje_1, 'personaje 1', IconP1),
-                      _buttonCharacter(_screenSize, Personaje_2, 'personaje 2', IconP2),
+                      _buttonCharacter(_screenSize, Personaje_1, IconP1),
+                      prefs.personaje1B == true
+                          ? _buttonBlock(_screenSize, IconPBloqueado,
+                              "Locked character.\nGet 200 points in any game mode to unlock the character.")
+                          : _buttonCharacter(_screenSize, Personaje_2, IconP2),
                     ],
                   ),
                   Row(
                     children: [
-                      _buttonCharacter(_screenSize, Personaje_3, 'personaje 3', IconP3),
-                      _buttonCharacter(_screenSize, Personaje_4, 'personaje 4', IconP4),
+                      prefs.personaje2B == true
+                          ? _buttonBlock(_screenSize, IconPBloqueado,
+                              "Locked character.\nGet 500 points in any game mode to unlock the character.")
+                          : _buttonCharacter(_screenSize, Personaje_3, IconP3),
+                      prefs.personaje3B == true
+                          ? _buttonBlock(_screenSize, IconPBloqueado,
+                              "Locked character.\nGet 800 points in any game mode to unlock the character.")
+                          : _buttonCharacter(_screenSize, Personaje_4, IconP4),
                     ],
                   ),
                 ],
@@ -82,7 +93,7 @@ class _CharacterState extends State<Character> {
     );
   }
 
-  Container _buttonCharacter(Size _screenSize, String personaje, String texto, String icon) {
+  Container _buttonCharacter(Size _screenSize, String personaje, String icon) {
     return Container(
       width: _screenSize.width * 0.15,
       height: _screenSize.height * 0.3,
@@ -93,6 +104,21 @@ class _CharacterState extends State<Character> {
           fit: BoxFit.fill,
         ),
         onTap: () => {changeHero(personaje, icon)},
+      ),
+    );
+  }
+
+  Container _buttonBlock(Size _screenSize, String icon, String texto) {
+    return Container(
+      width: _screenSize.width * 0.15,
+      height: _screenSize.height * 0.3,
+      padding: EdgeInsets.all(_screenSize.height * 0.01),
+      child: GestureDetector(
+        child: Image(
+          image: AssetImage(icon),
+          fit: BoxFit.fill,
+        ),
+        onTap: () => {changeBlock(texto)},
       ),
     );
   }
@@ -110,10 +136,43 @@ class _CharacterState extends State<Character> {
     );
   }
 
+  Container _pressSelect(Size _screenSize) {
+    return Container(
+      padding: EdgeInsets.only(top: _screenSize.height * 0.3, left: _screenSize.width * 0.04),
+      child: Container(
+        alignment: Alignment.center,
+        width: _screenSize.width * 0.40,
+        height: _screenSize.height * 0.3,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(
+            color: Colors.black,
+            width: 4,
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        //padding: EdgeInsets.only(top: _screenSize.height * 0.2, left: _screenSize.width * 0.01),
+        child: Text(
+          _textoD,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 15.0),
+        ),
+      ),
+    );
+  }
+
   void changeHero(String personaje, String iconSelect) {
     setState(() {
+      _isBlock = false;
       prefs.personajeSeleccionado = personaje;
       prefs.iconPersonajeS = iconSelect;
+    });
+  }
+
+  void changeBlock(String texto) {
+    setState(() {
+      _isBlock = true;
+      _textoD = texto;
     });
   }
 }

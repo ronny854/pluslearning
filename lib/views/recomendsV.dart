@@ -27,7 +27,7 @@ class _RecomendsVState extends State<RecomendsV> {
             alignment: Alignment.topCenter,
             padding: EdgeInsets.only(top: _screenSize.height * 0.09),
             child: Text(
-              "Recomendaciones para 'Vocabulary'",
+              "Recommendations for 'Vocabulary'",
               style: titulosR(_screenSize),
             ),
           ),
@@ -46,28 +46,28 @@ class _RecomendsVState extends State<RecomendsV> {
                           Container(
                             padding: EdgeInsets.only(top: 1.0),
                             child: Text(
-                              '- Usa técnicas de memorización.',
+                              '- Use memorization techniques.',
                               style: titulosEn(_screenSize),
                             ),
                           ),
                           Container(
                             padding: EdgeInsets.only(top: _screenSize.height * 0.035),
                             child: Text(
-                              '- Aprende un número limitado de palabras cada día.',
+                              '- Learn a limited number of words each day.',
                               style: titulosEn(_screenSize),
                             ),
                           ),
                           Container(
                             padding: EdgeInsets.only(top: _screenSize.height * 0.035),
                             child: Text(
-                              '- El aprendizaje del significado de un término es más sencillo y rápido si lo asociamos con una imagen.',
+                              '- Learning the meaning of a term is easier and faster if we associate it with an image.',
                               style: titulosEn(_screenSize),
                             ),
                           ),
                           Container(
                             padding: EdgeInsets.only(top: _screenSize.height * 0.035),
                             child: Text(
-                              '- Leer de forma activa nos permitirá ir incorporando nuevo vocabulario progresivamente.',
+                              '- Active reading will allow you to gradually incorporate new vocabulary.',
                               style: titulosEn(_screenSize),
                             ),
                           ),
@@ -86,7 +86,7 @@ class _RecomendsVState extends State<RecomendsV> {
                       child: ListView(
                         children: [
                           Text(
-                            "Tambien puedes usar targetas como esta: ",
+                            "You can also use cards like this: ",
                             style: titulosEn(_screenSize),
                           ),
                           Container(

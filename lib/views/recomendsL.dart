@@ -31,7 +31,7 @@ class _RecomendsLState extends State<RecomendsL> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(top: _screenSize.height * 0.09),
                       child: Text(
-                        "Recomendaciones para 'Listening'",
+                        "Recommendations for 'Listening'",
                         style: titulosR(_screenSize),
                       ),
                     ),
@@ -41,7 +41,7 @@ class _RecomendsLState extends State<RecomendsL> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(top: _screenSize.height * 0.05),
                       child: Text(
-                        '- Acostúmbrate en general a escuchar inicialmente el audio sin apoyarte en el texto o trascripción del mismo.',
+                        '- Get used to initially listening to the audio without relying on the text or transcription of it.',
                         style: titulosEn(_screenSize),
                       ),
                     ),
@@ -51,7 +51,7 @@ class _RecomendsLState extends State<RecomendsL> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(top: _screenSize.height * 0.05),
                       child: Text(
-                        '- Trabaja con audios (o vídeos) íntegramente en inglés y de forma separada con su trascripción en inglés.',
+                        '- Work with audios (or videos) entirely in English and separately with their transcription.',
                         style: titulosEn(_screenSize),
                       ),
                     ),
@@ -61,7 +61,7 @@ class _RecomendsLState extends State<RecomendsL> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(top: _screenSize.height * 0.05),
                       child: Text(
-                        '- No traduzcas las palabras. Intenta comprender la idea principal de la oración y verás que el resto de las palabras y frases las comprenderás de acuerdo al contexto en el que se encuentren.',
+                        "- Don't translate the words. Try to understand the main idea of the sentence and you will see that the rest of the words and phrases will be understood according to the context in which they are found.",
                         style: titulosEn(_screenSize),
                       ),
                     ),
@@ -71,7 +71,7 @@ class _RecomendsLState extends State<RecomendsL> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(top: _screenSize.height * 0.05),
                       child: Text(
-                        '- Si tienes alguna serie favorita de la que ya conoces la trama, mírala de nuevo en inglés con los subtítulos en el mismo idioma.',
+                        '- If you have a favorite series that you already know the plot of, watch it again in English with the subtitles in the same language.',
                         style: titulosEn(_screenSize),
                       ),
                     ),

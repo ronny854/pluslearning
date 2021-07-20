@@ -12,10 +12,11 @@ final columnQuestionSnd = 'pregunta_snd';
 final columnQuestionDifficulty = 'pregunta_dificultad';
 final columnQuestionScore = 'pregunta_score';
 final columnQuestionState = 'pregunta_estado';
+final columnOptionCorrect = 'pregunta_ocorrecta';
 
 class Question {
   int id, score, stateQ, difficulty, idTo;
-  String textQ, typeQ, imgQ, sndQ;
+  String textQ, typeQ, imgQ, sndQ, oCorrecta;
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
@@ -27,7 +28,8 @@ class Question {
       columnQuestionSnd: sndQ,
       columnQuestionDifficulty: difficulty,
       columnQuestionScore: score,
-      columnQuestionState: stateQ
+      columnQuestionState: stateQ,
+      columnOptionCorrect: oCorrecta
     };
     return map;
   }
@@ -43,6 +45,7 @@ class Question {
     difficulty = map[columnQuestionDifficulty];
     score = map[columnQuestionScore];
     stateQ = map[columnQuestionState];
+    oCorrecta = map[columnOptionCorrect];
   }
 }
 
@@ -60,6 +63,7 @@ class QuestionModel {
           columnQuestionDifficulty,
           columnQuestionScore,
           columnQuestionState,
+          columnOptionCorrect
         ],
         where: '$columnQuestionIdTopic=?',
         whereArgs: [id],
@@ -82,6 +86,7 @@ class QuestionModel {
           columnQuestionDifficulty,
           columnQuestionScore,
           columnQuestionState,
+          columnOptionCorrect
         ],
         where: '$columnQuestionIdTopic=? and $columnQuestionDifficulty=?',
         whereArgs: [id, dificulty],
@@ -91,14 +96,14 @@ class QuestionModel {
     return null;
   }
 
-  /* Future<List<Question>> getQuestionByDificulty(int idT, int dificulty) async {
+  Future<List<Question>> getQuestionByCalibrate(int idT) async {
     Database db = await copyDB();
     var maps = await db.rawQuery(
-        '''SELECT * from tbl_pregunta where tbl_pregunta.tema_id =$idT and tbl_pregunta.pregunta_dificultad = $dificulty''');
+        '''SELECT * from tbl_pregunta where tbl_pregunta.tema_id =$idT and tbl_pregunta.pregunta_isCalibrate = 1''');
     //closeDatabase();
     if (maps.length > 0) return maps.map((question) => Question.fromMap(question)).toList();
     return null;
-  } */
+  }
 }
 
 /* class QuestionList extends StateNotifier<List<Question>> {

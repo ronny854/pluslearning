@@ -9,6 +9,7 @@ Future<Database> copyDB() async {
   var dbPath = await getDatabasesPath();
   var path = join(dbPath, dbName);
   var exists = await databaseExists(path);
+
   if (!exists) {
     try {
       await Directory(dirname(path)).create(recursive: true);
@@ -20,5 +21,5 @@ Future<Database> copyDB() async {
     print('DB alredy exists');
   }
   //print(path);
-  return await openDatabase(path, readOnly: false);
+  return await openDatabase(path, readOnly: false, version: 1);
 }

@@ -34,7 +34,7 @@ class _RecomendsGState extends State<RecomendsG> {
                         alignment: Alignment.topCenter,
                         padding: EdgeInsets.only(top: _screenSize.height * 0.05),
                         child: Text(
-                          "Recomendaciones para 'Grammar'",
+                          "Recommendations for 'Grammar'",
                           style: titulosR(_screenSize),
                         ),
                       ),
@@ -44,7 +44,7 @@ class _RecomendsGState extends State<RecomendsG> {
                         alignment: Alignment.center,
                         padding: EdgeInsets.only(top: _screenSize.height * 0.05),
                         child: Text(
-                          'Para dominar el grammar lo más importante es conocer la estructura de las oraciones y seguir su orden, desliza tu dedo para ver las estructuras gramaticales del idoma.',
+                          'To master the grammar the most important thing is to know the structure of the sentences and follow their order, slide your finger to see the grammatical structures of the language.',
                           style: titulosEn(_screenSize),
                         ),
                       ),

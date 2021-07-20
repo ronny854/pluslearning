@@ -31,7 +31,7 @@ class _RecomendsRState extends State<RecomendsR> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(top: _screenSize.height * 0.09),
                       child: Text(
-                        "Recomendaciones para 'Reading'",
+                        "Recommendations for 'Reading'",
                         style: titulosR(_screenSize),
                       ),
                     ),
@@ -41,7 +41,7 @@ class _RecomendsRState extends State<RecomendsR> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(top: _screenSize.height * 0.05),
                       child: Text(
-                        '- Comienza leyendo textos sencillos, que estén a tu nivel y que sean interesantes para ti.',
+                        '- Start by reading simple texts that are at your level and that are interesting to you.',
                         style: titulosEn(_screenSize),
                       ),
                     ),
@@ -51,7 +51,7 @@ class _RecomendsRState extends State<RecomendsR> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(top: _screenSize.height * 0.05),
                       child: Text(
-                        '- Una vez hayas terminado con el capítulo del libro o el texto que estás leyendo, vuelve a leerlo en voz alta. ',
+                        '- Once you have finished with the chapter of the book or the text that you are reading, read it aloud again. ',
                         style: titulosEn(_screenSize),
                       ),
                     ),
@@ -61,7 +61,7 @@ class _RecomendsRState extends State<RecomendsR> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(top: _screenSize.height * 0.05),
                       child: Text(
-                        '- Mientras lees debes tener siempre a mano un cuaderno para ir apuntando todas las palabras nuevas que todavía no entiendes.',
+                        '- While you read you should always have a notebook at hand to write down all the new words that you still do not understand.',
                         style: titulosEn(_screenSize),
                       ),
                     ),
@@ -71,7 +71,7 @@ class _RecomendsRState extends State<RecomendsR> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(top: _screenSize.height * 0.05),
                       child: Text(
-                        '- Escribir un resumen de lo leído con tus propias palabras puede resultar muy útil. ',
+                        '- Writing a summary of what you read in your own words can be very useful. ',
                         style: titulosEn(_screenSize),
                       ),
                     ),

@@ -150,14 +150,17 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   bool _play = false;
   AnimationController audioAnimation;
   final assetsAudioPlayer = AssetsAudioPlayer();
+  final opcionEs = TextEditingController();
 
+  num desem = 0;
   @override
   void dispose() {
+    //this.opcionEs.dispose();
     this.assetsAudioPlayer.dispose();
     if (_controllerTimer.isAnimating || _controllerTimer.isCompleted) {
       this._controllerTimer.dispose();
-      super.dispose();
     }
+    super.dispose();
   }
 
   @override
@@ -171,6 +174,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
       if (_controllerTimer.isCompleted) {
         if (this.mounted) {
           setState(() {
+            questionsIncorrect += 1;
             _controllerTimer.stop();
             _animacionEnemy = "ataque";
             _animacionHero = "damage";
@@ -178,18 +182,30 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
             _controlsPersonje.play(_animacionHero);
             _controlsEnemigo.onCompleted(_animacionEnemy = "espera");
             _controlsPersonje.onCompleted(_animacionHero = "espera");
-            lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
-            questionsIncorrect += 1;
-            if (lifeHero >= 0.1) {
-              //print('vida: $lifeHero daño: $damageEnemy');
-              if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow; //amarillo
-              if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
+            if (prefs.isCalibrating == false) {
+              lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
+
+              if (lifeHero >= 0.1) {
+                //print('vida: $lifeHero daño: $damageEnemy');
+                if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow; //amarillo
+                if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
+              } else {
+                lifeHero = 0.0;
+                _winner = false;
+                enviarScore();
+              }
             } else {
-              lifeHero = 0.0;
-              _winner = false;
-              enviarScore();
+              if (numQuestion >= listQuestions.length - 1) {
+                enviarScore();
+              }
             }
-            Timer(Duration(milliseconds: 4000), nextquestion);
+
+            if (numQuestion < listQuestions.length - 1) {
+              Timer(Duration(milliseconds: 4000), nextquestion);
+            }
+            if (prefs.isCalibrating == false) {
+              Timer(Duration(milliseconds: 4000), nextquestion);
+            }
             //_controllerTimer.reset();
             //_controllerTimer.forward();
           });
@@ -199,7 +215,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     _controllerTimer.forward(); //Start timer
   }
 
-  void checkanswer(int correctO, int posColor) {
+  void checkanswer(String correctO) {
     _optionState = false;
     if (this.mounted) {
       setState(() {
@@ -209,28 +225,34 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
         _controllerTimer.stop();
         // _controllerTimer.reset();
 
-        if (correctO == 1) {
+        if (correctO?.toLowerCase() == listQuestions[numQuestion].oCorrecta?.toLowerCase()) {
           points = points + listQuestions[numQuestion].score;
-          questionsCorrect += 1;
-          colortoshow = right;
 
+          colortoshow = right;
+          questionsCorrect += 1;
           _animacionHero = "ataque";
           _animacionEnemy = "damage";
           _controlsPersonje.play(_animacionHero);
           _controlsEnemigo.play(_animacionEnemy);
           _controlsPersonje.onCompleted(_animacionHero = "espera");
           _controlsEnemigo.onCompleted(_animacionEnemy = "espera");
-          lifeEnemy = double.parse((lifeEnemy - damageHero).toStringAsFixed(1));
-          if (lifeEnemy >= 0.1) {
-            if (lifeEnemy <= 0.6 && lifeEnemy >= 0.4) barEnemy = Colors.yellow;
-            if (lifeEnemy <= 0.4 && lifeEnemy >= 0.0) barEnemy = Colors.red;
-          } else {
-            lifeEnemy = 0.0;
-            _controlsEnemigo.play("death");
-            _winner = true;
+          if (prefs.isCalibrating == false) {
+            lifeEnemy = double.parse((lifeEnemy - damageHero).toStringAsFixed(1));
+            if (lifeEnemy >= 0.1) {
+              if (lifeEnemy <= 0.6 && lifeEnemy >= 0.4) barEnemy = Colors.yellow;
+              if (lifeEnemy <= 0.4 && lifeEnemy >= 0.0) barEnemy = Colors.red;
+            } else {
+              lifeEnemy = 0.0;
+              _controlsEnemigo.play("death");
+              _winner = true;
 
-            //_controlsEnemigo.onCompleted(name)
-            enviarScore();
+              //_controlsEnemigo.onCompleted(name)
+              enviarScore();
+            }
+          } else {
+            if (numQuestion >= listQuestions.length - 1) {
+              enviarScore();
+            }
           }
         } else {
           colortoshow = wrong;
@@ -241,25 +263,35 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
           _controlsPersonje.play(_animacionHero);
           _controlsEnemigo.onCompleted(_animacionEnemy = "espera");
           _controlsPersonje.onCompleted(_animacionHero = "espera");
-          lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
-          if (lifeHero >= 0.1) {
-            //print('vida: $lifeHero daño: $damageEnemy');
-            if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
-            if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
+          if (prefs.isCalibrating == false) {
+            lifeHero = double.parse((lifeHero - damageEnemy).toStringAsFixed(1));
+            if (lifeHero >= 0.1) {
+              //print('vida: $lifeHero daño: $damageEnemy');
+              if (lifeHero <= 0.6 && lifeHero >= 0.4) barHero = Colors.yellow;
+              if (lifeHero <= 0.4 && lifeHero >= 0.0) barHero = Colors.red;
+            } else {
+              lifeHero = 0.0;
+              _controlsPersonje.play("death");
+              _winner = false;
+              enviarScore();
+            }
           } else {
-            lifeHero = 0.0;
-            _controlsPersonje.play("death");
-            _winner = false;
-            enviarScore();
+            if (numQuestion >= listQuestions.length - 1) {
+              enviarScore();
+            }
           }
         }
         // applying the changed color to the particular button that was selected
         //setState(() {
-        btncolor[posColor] = colortoshow;
+        //btncolor[posColor] = colortoshow;
         //colorboton[posColor] = colortoshow;
         disableAnswer = true;
-        Timer(Duration(milliseconds: 4000), nextquestion);
-
+        if (numQuestion < listQuestions.length - 1 && prefs.isCalibrating == true) {
+          Timer(Duration(milliseconds: 4000), nextquestion);
+        }
+        if (prefs.isCalibrating == false) {
+          Timer(Duration(milliseconds: 4000), nextquestion);
+        }
         // nextquestion();
         //});
 
@@ -276,6 +308,9 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     numQuestion++;
     _isButtonDisabled = false;
     _optionState = true;
+    if (idTema == 2 || opcionEs != null) {
+      opcionEs.clear();
+    }
 /*     if (numQuestion < listQuestions.length - 1) {
       numQuestion++;
     } */
@@ -295,7 +330,9 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
 
     _controllerTimer.reset();
     _controllerTimer.forward();
-    audioAnimation.reverse();
+    if (idTema == 3) {
+      audioAnimation.reverse();
+    }
 
     _play = false;
 
@@ -304,6 +341,16 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
 
   Future<dynamic> enviarScore() {
     int res = 0;
+
+    if (idTema == 1) {
+      prefs.calibrateGrammar = true;
+    } else if (idTema == 2) {
+      prefs.calibrateReading = true;
+    } else if (idTema == 3) {
+      prefs.calibrateListening = true;
+    } else {
+      prefs.calibrateVocabulary = true;
+    }
     //_controllerTimer.dispose();
     return Future.delayed(Duration(seconds: 2), () {
       //_controllerTimer.stop();
@@ -315,12 +362,23 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
       final _pointsA = _pointsProvider.pointsA;
       int tcorrectQ = _pointsA[0].numQuesC + questionsCorrect;
       int tincorrectQ = _pointsA[0].numQuesIn + questionsIncorrect;
-      num desem = formatNumero((tcorrectQ) / (tcorrectQ + tincorrectQ));
+      desem = formatNumero((tcorrectQ) / (tcorrectQ + tincorrectQ));
+
       res = _pointsA[0].scoreT + points;
       print('desempenio = $desem');
       //print('correct= $questionsCorrect incorrect=$questionsIncorrect');
       //print(_pointsA[0].numQuesC);
       _pointsProvider.updatePoints(res, idTema, tcorrectQ, tincorrectQ, desem);
+      if (res >= 200) {
+        prefs.personaje1B = false;
+      }
+      if (res >= 500) {
+        prefs.personaje2B = false;
+      }
+      if (res >= 800) {
+        prefs.personaje3B = false;
+      }
+
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return Score(
           points: points,
@@ -336,213 +394,184 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     final _pointsProvider = Provider.of<PointsProvider>(context, listen: false);
     _pointsProvider.cargarPuntos(idTema);
 
-    return Scaffold(
-      body: Container(
-        child: Stack(
-          alignment: AlignmentDirectional.topStart,
-          children: [
-            Container(
-              child: Image.asset(
-                escenarioS,
-                fit: BoxFit.cover,
-                height: media.height,
-                width: media.width,
+    return WillPopScope(
+      onWillPop: confirmAlert,
+      child: Scaffold(
+        body: Container(
+          child: Stack(
+            alignment: AlignmentDirectional.topStart,
+            children: [
+              Container(
+                child: Image.asset(
+                  escenarioS,
+                  fit: BoxFit.cover,
+                  height: media.height,
+                  width: media.width,
+                ),
               ),
-            ),
-            Container(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.asset(
-                    '${prefs.iconPersonajeS}',
-                    fit: BoxFit.cover,
-                    height: 55.0,
-                    width: 55.0,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 160.0),
-                  ),
-                  Transform(
-                    transform: Matrix4.diagonal3Values(-1.0, 1.0, 1.0),
-                    child: LinearPercentIndicator(
+              Container(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Image.asset(
+                      '${prefs.iconPersonajeS}',
+                      fit: BoxFit.cover,
+                      height: 55.0,
+                      width: 55.0,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 160.0),
+                    ),
+                    Transform(
+                      transform: Matrix4.diagonal3Values(-1.0, 1.0, 1.0),
+                      child: LinearPercentIndicator(
+                        width: 160.0,
+                        lineHeight: 22.0,
+                        percent: 1 - lifeHero,
+                        backgroundColor: barHero,
+                        progressColor: Colors.grey,
+                        animation: true,
+                        animationDuration: 1000,
+                        curve: Curves.fastOutSlowIn,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 93.0),
+                    ),
+                    LinearPercentIndicator(
                       width: 160.0,
                       lineHeight: 22.0,
-                      percent: 1 - lifeHero,
-                      backgroundColor: barHero,
+                      percent: 1 - lifeEnemy,
+                      //linearStrokeCap: LinearStrokeCap.roundAll,
+                      backgroundColor: barEnemy,
                       progressColor: Colors.grey,
                       animation: true,
                       animationDuration: 1000,
                       curve: Curves.fastOutSlowIn,
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 93.0),
-                  ),
-                  LinearPercentIndicator(
-                    width: 160.0,
-                    lineHeight: 22.0,
-                    percent: 1 - lifeEnemy,
-                    //linearStrokeCap: LinearStrokeCap.roundAll,
-                    backgroundColor: barEnemy,
-                    progressColor: Colors.grey,
-                    animation: true,
-                    animationDuration: 1000,
-                    curve: Curves.fastOutSlowIn,
-                  ),
-                  Image.asset(
-                    iconEnemy,
-                    fit: BoxFit.cover,
-                    height: 55.0,
-                    width: 55.0,
-                  ),
-                ],
-              ),
-            ),
-
-            Container(
-              alignment: Alignment.topCenter,
-              width: media.width,
-              height: media.height * 0.1,
-              //padding: EdgeInsets.only(left: media.width * 0.08),
-              child: Image(
-                image: AssetImage(FondoTimer),
-                fit: BoxFit.fill,
-              ),
-            ),
-            Container(
-              alignment: Alignment.topCenter,
-              padding: EdgeInsets.only(top: media.height * 0.015),
-              child: CountDown(
-                animation: StepTween(begin: limitTime, end: 0).animate(_controllerTimer),
-              ),
-            ),
-
-/*             Container(
-              alignment: Alignment.topCenter,
-              child: Text(
-                showtimer,
-                style: TextStyle(
-                  fontSize: 35.0,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Times New Roman',
-                  color: Colors.white,
+                    Image.asset(
+                      iconEnemy,
+                      fit: BoxFit.cover,
+                      height: 55.0,
+                      width: 55.0,
+                    ),
+                  ],
                 ),
               ),
-            ), */
-            // condicion if
-            //score==0 ? Container() : Container(),
-/*             Stack(
-              children: [
-                Container(
-                  padding: EdgeInsets.only(top: 45.0, left: 50.0),
-                  child: Image.asset(
-                    FondoPreguntas,
-                    width: 590.0,
-                    height: 65.0,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.only(
-                      top: media.height * 0.109,
-                      left: media.width * 0.095,
-                      right: media.width * 0.087),
-                  child: Text(
-                    'N° ${numQuestion + 1} ' + listQuestions[numQuestion].textQ,
-                    style: TextStyle(color: Colors.black87, fontSize: 20.0),
-                  ),
-                ),
-                listQuestions[numQuestion].typeQ == 'picture'
-                    ? imageQuestion(listQuestions[numQuestion].imgQ, true)
-                    : imageQuestion('no hay nada', false),
-              ],
-            ), */
 
-            /* : Container(
-                    padding: EdgeInsets.only(top: 100.0, left: 300.0),
-                    child: Text('no hay nada'),
-                  ), */
-/*                 Visibility(
-                    visible: true,
-                    child: Container(),
-                  ), */
+              Container(
+                alignment: Alignment.topCenter,
+                width: media.width,
+                height: media.height * 0.1,
+                //padding: EdgeInsets.only(left: media.width * 0.08),
+                child: Image(
+                  image: AssetImage(FondoTimer),
+                  fit: BoxFit.fill,
+                ),
+              ),
+              Container(
+                alignment: Alignment.topCenter,
+                padding: EdgeInsets.only(top: media.height * 0.015),
+                child: CountDown(
+                  animation: StepTween(begin: limitTime, end: 0).animate(_controllerTimer),
+                ),
+              ),
 
-            Container(
-              child: Row(
-                children: [
-                  Stack(
-                    children: [
-                      Container(
-                        height: media.height * 0.99,
+              Container(
+                child: Row(
+                  children: [
+                    Stack(
+                      children: [
+                        Container(
+                          height: media.height * 0.99,
+                          width: media.width,
+                          padding: EdgeInsets.only(top: media.height * 0.17),
+                          //alignment: Alignment.bottomCenter,
+                          child: FlareActor(
+                            enemySelct,
+                            animation: _animacionEnemy,
+                            fit: BoxFit.contain,
+                            controller: _controlsEnemigo,
+                          ),
+                        ),
+                        Container(
+                          height: media.height * 0.99,
+                          width: media.width,
+                          padding: EdgeInsets.only(top: media.height * 0.14),
+                          child: FlareActor(
+                            '${prefs.personajeSeleccionado}',
+                            animation: _animacionHero,
+                            fit: BoxFit.contain,
+                            controller: _controlsPersonje,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              //newMethod(context),
+              dificultad == 4
+                  ? Container(
+                      padding: EdgeInsets.only(top: 330.0, left: 150.0),
+                      alignment: Alignment.center,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 300.0,
+                            height: 35.0,
+                            decoration: BoxDecoration(color: Colors.white),
+                            child: TextField(
+                              //onTap: () => _controllerTimer.stop(),
+                              textAlign: TextAlign.center,
+                              decoration: InputDecoration(
+                                hintText: 'Your answer',
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.blue),
+                                ),
+                              ),
+                              controller: opcionEs,
+                            ),
+                          ),
+                          MaterialButton(
+                              child: Text('Check'),
+                              color: Colors.indigo[400],
+                              onPressed: () {
+                                checkanswer(opcionEs.text);
+                              }),
+                        ],
+                      ),
+                    )
+                  : Visibility(
+                      visible: _optionState,
+                      child: Container(
                         width: media.width,
-                        padding: EdgeInsets.only(top: 30.0),
-                        //alignment: Alignment.bottomCenter,
-                        child: FlareActor(
-                          enemySelct,
-                          animation: _animacionEnemy,
-                          fit: BoxFit.contain,
-                          controller: _controlsEnemigo,
+                        //height: media.height,
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(top: media.height * 0.80),
+                        child: FutureBuilder(
+                          future: getOptionQuestion(listQuestions[numQuestion].id),
+                          initialData: [],
+                          builder: (BuildContext context, AsyncSnapshot snapshot) {
+                            _snapshotOp = snapshot;
+                            return optionWidget(context);
+                          },
                         ),
                       ),
-                      Container(
-                        height: media.height * 0.99,
-                        width: media.width,
-                        padding: EdgeInsets.only(top: 20.0),
-                        child: FlareActor(
-                          '${prefs.personajeSeleccionado}',
-                          animation: _animacionHero,
-                          fit: BoxFit.contain,
-                          controller: _controlsPersonje,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                    ),
+              Container(
+                child: listQuestions[numQuestion].typeQ == 'picture'
+                    ? _questionImage(media)
+                    : listQuestions[numQuestion].typeQ == 'audio'
+                        ? _questionSound(media)
+                        : _questionText(media),
               ),
-            ),
-            //newMethod(context),
-            Visibility(
-              visible: _optionState,
-              child: Container(
-                padding: EdgeInsets.only(top: 260.0),
-                child: FutureBuilder(
-                  future: getOptionQuestion(listQuestions[numQuestion].id),
-                  initialData: [],
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    _snapshotOp = snapshot;
-                    return optionWidget(context);
-                  },
-                ),
-              ),
-            ),
-            Container(
-              child: listQuestions[numQuestion].typeQ == 'picture'
-                  ? _questionImage(media)
-                  : listQuestions[numQuestion].typeQ == 'audio'
-                      ? _questionSound(media)
-                      : _questionText(media),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
-
-/*   Container newMethod(BuildContext context) {
-    final _optionsProvider = Provider.of<OptionsProvider>(context, listen: false);
-    _optionsProvider.cargarOpcionesPregunta(listQuestions[numQuestion].id);
-    final _op = _optionsProvider.options;
-    return Container(
-      padding: EdgeInsets.only(top: 200.0, left: 150),
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: _op == null ? 0 : _op.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Text(_op[index].textO);
-        },
-      ),
-    );
-  } */
 
   Future<List<Option>> getOptionQuestion(int id) async {
     var result = await OptionModel().getOptionQuestionById(id);
@@ -554,6 +583,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     var values = _snapshotOp.data;
 
     return Container(
+      //alignment: Alignment.center,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: values == null ? 0 : values.length,
@@ -569,7 +599,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                   return null;
                 } else {
                   //_controllerTimer.stop(canceled: true);
-                  return checkanswer(values[index].correctO, index);
+                  return checkanswer(values[index].textO);
                 }
               },
               //onPressed: () => nextquestion(),
@@ -595,8 +625,8 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   }
 
   Widget _questionImage(Size media) {
-    //_withImg = media.width * 0.15;
-    //_heighImg = media.height * 0.2;
+    _withImg = media.width * 0.15;
+    _heighImg = media.height * 0.2;
     return Container(
       alignment: Alignment.topCenter,
       padding: EdgeInsets.only(top: media.height * 0.11),
@@ -623,7 +653,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
             ),
           ),
           Container(
-            alignment: FractionalOffset.center,
+            //alignment: Alignment.center,
             //height: media.height * 0.25,
             //width: media.width * 0.1,
             padding: EdgeInsets.only(top: media.height * 0.074),
@@ -638,7 +668,6 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                     _withImg = media.width;
                     _heighImg = media.height;
                     _dobleTapImg = false;
-                    print('emtrp');
                   });
                 } else {
                   setState(() {
@@ -776,7 +805,22 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     return n;
   }
 
-  void _condion() {
-    print('entro');
+  Future<bool> confirmAlert() async {
+    final shouldPop = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Are you sure you want to quit?'),
+        content: Text('All your progress will be lost.'),
+        actions: [
+          TextButton(child: Text('No'), onPressed: () => Navigator.of(context).pop(false)),
+          TextButton(
+              child: Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              }),
+        ],
+      ),
+    );
+    return shouldPop ?? false;
   }
 }

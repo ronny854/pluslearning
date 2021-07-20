@@ -92,7 +92,7 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<List<PointsA>> getPointsA(int id) async {
-    print('entro aqui $id');
+    //print('entro aqui $id');
     var result = await PointsAModel().getPointsAById(id);
     //context.read(topicListProvider).state = result;
     return result;
@@ -143,11 +143,11 @@ class _ProfileState extends State<Profile> {
             SizedBox(height: 20.0),
             Text('Total Score:  ${pointsA.scoreT}'),
             SizedBox(height: 20.0),
-            Text('Total preguntas correctas:  ${pointsA.numQuesC}'),
+            Text('Total correct questions:  ${pointsA.numQuesC}'),
             SizedBox(height: 20.0),
-            Text('Total preguntas incorrectas : ${pointsA.numQuesIn}'),
+            Text('Total incorrect questions : ${pointsA.numQuesIn}'),
             SizedBox(height: 20.0),
-            Text('desempeño tema'),
+            Text('Performance topic'),
             LinearPercentIndicator(
               width: 140.0,
               lineHeight: 14.0,
@@ -171,7 +171,7 @@ class _ProfileState extends State<Profile> {
                               builder: (context) => RecomendsG(),
                             ));
                       },
-                      child: Text('Recomends'),
+                      child: Text('Recommendations'),
                     ),
                   )
                 : pointsA.idTo == 2
@@ -184,7 +184,7 @@ class _ProfileState extends State<Profile> {
                                   builder: (context) => RecomendsR(),
                                 ));
                           },
-                          child: Text('Recomends'),
+                          child: Text('Recommendations'),
                         ),
                       )
                     : pointsA.idTo == 3
@@ -197,7 +197,7 @@ class _ProfileState extends State<Profile> {
                                       builder: (context) => RecomendsL(),
                                     ));
                               },
-                              child: Text('Recomends'),
+                              child: Text('Recommendations'),
                             ),
                           )
                         : pointsA.idTo == 4
@@ -210,7 +210,7 @@ class _ProfileState extends State<Profile> {
                                           builder: (context) => RecomendsV(),
                                         ));
                                   },
-                                  child: Text('Recomends'),
+                                  child: Text('Recommendations'),
                                 ),
                               )
                             : Container(

@@ -2,7 +2,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:learning_appfinal/logic/envioPreguntas.dart';
+import 'package:learning_appfinal/models/topics_model.dart';
 import 'package:learning_appfinal/others/constans.dart';
+import 'package:learning_appfinal/others/preferences.dart';
 import 'package:learning_appfinal/providers/topics_provider.dart';
 import 'package:provider/provider.dart';
 //import 'package:learning_appfinal/others/state_manager.dart';
@@ -20,6 +22,10 @@ class _TopicsState extends State<Topics> {
   Widget build(BuildContext context) {
     final topicsProvider = Provider.of<TopicsProvider>(context);
     final topicP = topicsProvider.topics;
+    final prefs = new Preferences();
+    setState(() {
+      prefs.tutorialGame = false;
+    });
 
     var _screenSize = MediaQuery.of(context).size;
     return Container(
@@ -38,34 +44,47 @@ class _TopicsState extends State<Topics> {
                   itemBuilder: (_, int i) {
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return ePreguntas(
-                            idTemaPregunta: topicP[i].id,
-                            score: topicP[i].scoreT,
-                          );
-                        }));
+                        //print('holaa');
+                        if (topicP[i].id == 1 && prefs.calibrateGrammar == false) {
+                          prefs.isCalibrating = true;
+                          alertCalibrate(context, topicP, i);
+                        } else if (topicP[i].id == 2 && prefs.calibrateReading == false) {
+                          prefs.isCalibrating = true;
+                          alertCalibrate(context, topicP, i);
+                        } else if (topicP[i].id == 3 && prefs.calibrateListening == false) {
+                          prefs.isCalibrating = true;
+                          alertCalibrate(context, topicP, i);
+                        } else if (topicP[i].id == 4 && prefs.calibrateVocabulary == false) {
+                          prefs.isCalibrating = true;
+                          alertCalibrate(context, topicP, i);
+                        } else {
+                          prefs.isCalibrating = false;
+                          envioPreguntasGame(context, topicP, i);
+                        }
                       },
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Image.asset(
-                            BotonTopic,
-                            width: _screenSize.width,
-                            height: _screenSize.height * 0.55,
-                          ),
-                          Container(
-                            //padding: EdgeInsets.symmetric(vertical: 15, horizontal: 100),
-                            child: Text(
-                              topicP[i].name,
-                              style: GoogleFonts.pacifico(
-                                textStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 60.0,
+                      child: Container(
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Image.asset(
+                              BotonTopic,
+                              width: _screenSize.width,
+                              height: _screenSize.height * 0.55,
+                            ),
+                            Container(
+                              //padding: EdgeInsets.symmetric(vertical: 15, horizontal: 100),
+                              child: Text(
+                                topicP[i].name,
+                                style: GoogleFonts.pacifico(
+                                  textStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 60.0,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -77,104 +96,39 @@ class _TopicsState extends State<Topics> {
                 ),
               ),
             ),
-/*             ListView.builder(
-              padding: EdgeInsets.only(top: 25.0, bottom: 40.0),
-              itemCount: topicP.length,
-              itemBuilder: (_, int i) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return ePreguntas(
-                        idTemaPregunta: topicP[i].id,
-                        score: topicP[i].scoreT,
-                      );
-                    }));
-                  },
-                  child: Container(),
-
-                );
-              },
-            ), */
           ],
         ),
       ),
     );
   }
 
-/*                   child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset(
-                        Boton1,
-                        height: 50.0,
-                        width: 250.0,
-                        fit: BoxFit.contain,
-                      ),                  
-                     Container(
-                        //padding: EdgeInsets.symmetric(vertical: 15, horizontal: 100),
-                        child: Text(topicP[i].name),
-                      ),
-                      SizedBox(
-                        height: 70.0,
-                      ), 
-                    ],
-                  ), */
-/*   Widget topicsMenu() {
-    return Container(
-      padding: EdgeInsets.only(top: 25.0, bottom: 40.0),
-      child: FutureBuilder<List<Topic>>(
-        future: getTopics(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasError)
-            return Center(
-              child: Text('${snapshot.error}'),
-            );
-          else if (snapshot.hasData) {
-            return ListView(
-              children: snapshot.data.map<Widget>((topic) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      //print(topic.id);
-                      return ePreguntas(
-                        idTemaPregunta: topic.id,
-                      );
-                    }));
-                  },
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset(
-                        Boton1,
-                        height: 50.0,
-                        width: 250.0,
-                        fit: BoxFit.contain,
-                      ),
-                      Container(
-                        child: Text('${topic.name}'),
-                      ),
-                      SizedBox(
-                        height: 70.0,
-                      )
-                    ],
-                  ),
-                );
-              }).toList(),
-            );
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
+  Future<dynamic> alertCalibrate(BuildContext context, List<Topic> topicP, int i) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Start calibration.'),
+        content: Text(
+            'This game will serve to evaluate your knowledge in this subject and thus adjust the difficulty.'),
+        actions: [
+          TextButton(child: Text('No'), onPressed: () => Navigator.of(context).pop()),
+          TextButton(
+            child: Text('Yes'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              envioPreguntasGame(context, topicP, i);
+            },
+          ),
+        ],
       ),
     );
-  } */
+  }
 
-/*   Future<List<Topic>> getTopics() async {
-    var result = await TopicModel().getTopics();
-    var res2 = await TopicModel().getTopics2();
-    print(res2[0].scoreT);
-
-    //context.read(topicListProvider).state = result;
-    return result;
-  } */
+  void envioPreguntasGame(BuildContext context, List<Topic> topicP, int i) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ePreguntas(
+        idTemaPregunta: topicP[i].id,
+        score: topicP[i].scoreT,
+      );
+    }));
+  }
 }
