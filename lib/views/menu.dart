@@ -36,26 +36,17 @@ class _MenuState extends State<Menu> {
                 fit: BoxFit.cover,
               ),
             ),
-
-            // flare actor para los personajes del juego
-/*             Container(
-              width: media.width,
-              height: media.height * 0.6,
-              child: FlareActor(
-                Personaje2,
-                animation: "prueba",
-                //alignment: Alignment.center,
-                fit: BoxFit.contain,
-              ),
-            ), */
-
+            Container(
+                width: _media.width * 0.25,
+                child: Image.asset(
+                  'assets/imagenes/logo.gif',
+                  fit: BoxFit.fill,
+                )),
             Container(
               padding: EdgeInsets.only(top: distancia, left: _media.width * 0.23),
               child: Column(
                 children: [
                   Row(
-                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    //crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       _prefs.tutorialGame == true
                           ? botonMenu('Play', 'tutorialGame', context)
@@ -64,11 +55,9 @@ class _MenuState extends State<Menu> {
                     ],
                   ),
                   Row(
-                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    //crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       botonMenu('Characters', 'personaje', context),
-                      botonMenu('Settings', 'conf', context),
+                      botonMenu('About', 'conf', context),
                     ],
                   )
                 ],

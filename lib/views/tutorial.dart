@@ -21,7 +21,7 @@ class _TutorialState extends State<Tutorial> {
       // iconImageAssetPath: 'assets/air-hostess.png',
       //bubble: Image.asset(IconPers,
       body: const Text(
-        'A new way to learn English in an easy and fun way.',
+        'A new way to learn English while having fun.',
       ),
       title: const Text(
         'Welcome to',
@@ -29,7 +29,7 @@ class _TutorialState extends State<Tutorial> {
       titleTextStyle: const TextStyle(fontFamily: 'MyFont', color: Colors.white),
       bodyTextStyle: const TextStyle(fontFamily: 'MyFont', color: Colors.white),
       mainImage: Image.asset(
-        IconPers,
+        'assets/icon/icon_app.png',
         height: 285.0,
         width: 285.0,
         alignment: Alignment.center,
@@ -81,7 +81,7 @@ class _TutorialState extends State<Tutorial> {
     ),
     //4
     PageViewModel(
-      pageColor: const Color(0xFF8BC34A),
+      pageColor: const Color(0xFF03A9F4),
       //iconImageAssetPath: 'assets/waiter.png',
       body: const Text(
         'Remember, swipe your finger down the bottom of the screen to see all the options available for the question.',
@@ -99,9 +99,66 @@ class _TutorialState extends State<Tutorial> {
       titleTextStyle: const TextStyle(fontFamily: 'MyFont', color: Colors.white),
       bodyTextStyle: const TextStyle(fontFamily: 'MyFont', color: Colors.white),
     ),
-    //5
+    PageViewModel(
+      pageColor: const Color(0xFF8BC34A),
+      //iconImageAssetPath: 'assets/waiter.png',
+      body: const Text(
+        'Double-tap on the image to enlarge and view it better.',
+      ),
+      title: const Text('How to play?'),
+      mainImage: Container(
+        height: 200.0,
+        width: 285.0,
+        child: FlareActor(
+          Atutorial,
+          animation: 'screen4',
+          fit: BoxFit.fill,
+        ),
+      ),
+      titleTextStyle: const TextStyle(fontFamily: 'MyFont', color: Colors.white),
+      bodyTextStyle: const TextStyle(fontFamily: 'MyFont', color: Colors.white),
+    ),
     PageViewModel(
       pageColor: const Color(0xFF03A9F4),
+      // iconImageAssetPath: 'assets/air-hostess.png',
+      //bubble: Image.asset(IconPers,,
+      body: const Text(
+        'When you see the play symbol, tap on the button to listen to the audio.',
+      ),
+      title: const Text(
+        'How to play?',
+      ),
+      titleTextStyle: const TextStyle(fontFamily: 'MyFont', color: Colors.white),
+      bodyTextStyle: const TextStyle(fontFamily: 'MyFont', color: Colors.white),
+      mainImage: Image.asset(
+        'assets/imagenes/botonplay.png',
+        height: 285.0,
+        width: 285.0,
+        alignment: Alignment.center,
+      ),
+    ),
+    PageViewModel(
+      pageColor: const Color(0xFF03A9F4),
+      // iconImageAssetPath: 'assets/air-hostess.png',
+      //bubble: Image.asset(IconPers,,
+      body: const Text(
+        'When you have to write use the contractions of or short form of the word.',
+      ),
+      title: const Text(
+        'How to play?',
+      ),
+      titleTextStyle: const TextStyle(fontFamily: 'MyFont', color: Colors.white),
+      bodyTextStyle: const TextStyle(fontFamily: 'MyFont', color: Colors.white),
+      mainImage: Image.asset(
+        'assets/imagenes/checkShortForm.png',
+        height: 285.0,
+        width: 285.0,
+        alignment: Alignment.center,
+      ),
+    ),
+    //5
+    PageViewModel(
+      pageColor: const Color(0xFF8BC34A),
       // iconImageAssetPath: 'assets/air-hostess.png',
       //bubble: Image.asset(IconPers,,
       body: const Text(
@@ -113,7 +170,7 @@ class _TutorialState extends State<Tutorial> {
       titleTextStyle: const TextStyle(fontFamily: 'MyFont', color: Colors.white),
       bodyTextStyle: const TextStyle(fontFamily: 'MyFont', color: Colors.white),
       mainImage: Image.asset(
-        IconPers,
+        'assets/imagenes/tutorialpoints.png',
         height: 285.0,
         width: 285.0,
         alignment: Alignment.center,
@@ -121,14 +178,14 @@ class _TutorialState extends State<Tutorial> {
     ),
     //6
     PageViewModel(
-      pageColor: const Color(0xFF8BC34A),
+      pageColor: const Color(0xFF03A9F4),
       //iconImageAssetPath: 'assets/waiter.png',
       body: const Text(
         'Profile You can review your performance of each topic in the profile section, when your performance is less than 30%, a recommendation button will appear.',
       ),
       title: const Text('Profile'),
       mainImage: Image.asset(
-        IconPers,
+        'assets/imagenes/tutorialprofile.png',
         height: 285.0,
         width: 285.0,
         alignment: Alignment.center,
@@ -158,7 +215,7 @@ class _TutorialState extends State<Tutorial> {
       ),
       title: const Text("let's go!"),
       mainImage: Image.asset(
-        IconPers,
+        'assets/imagenes/tutorialmodegame.png',
         height: 285.0,
         width: 285.0,
         alignment: Alignment.center,

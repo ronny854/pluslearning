@@ -10,8 +10,15 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
+    var _media = MediaQuery.of(context).size;
     return Scaffold(
-      body: Text('settings'),
+      body: Container(
+          width: _media.width,
+          height: _media.height,
+          child: Image.asset(
+            'assets/imagenes/about game.png',
+            fit: BoxFit.fill,
+          )),
     );
   }
 }

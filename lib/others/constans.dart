@@ -68,3 +68,26 @@ const String Escenario5 = 'assets/imagenes/escenario5.jpg';
 
 //imagenes recomendaciones
 const String ImagenR1 = 'assets/imgenes_recomen/present_perfect.png';
+const String ImagenR3 = 'assets/imgenes_recomen/present_perfect2.png';
+const String ImagenR4 = 'assets/imgenes_recomen/present_perfect3.png';
+const String ImagenR5 = 'assets/imgenes_recomen/future_will.png';
+const String ImagenR6 = 'assets/imgenes_recomen/future_will2.png';
+const String ImagenR7 = 'assets/imgenes_recomen/real_condicional1.png';
+const String ImagenR8 = 'assets/imgenes_recomen/real_condicional2.png';
+const String ImagenR9 = 'assets/imgenes_recomen/phrasal_verbs1.png';
+const String ImagenR10 = 'assets/imgenes_recomen/phrasal_verbs2.png';
+const String ImagenR11 = 'assets/imgenes_recomen/phrasal_verbs3.png';
+const String ImagenR12 = 'assets/imgenes_recomen/phrasal_verbs4.png';
+const String ImagenR13 = 'assets/imgenes_recomen/quantifiers1.png';
+const String ImagenR14 = 'assets/imgenes_recomen/quantifiers2.png';
+const String ImagenR15 = 'assets/imgenes_recomen/quantifiers3.png';
+const String ImagenR16 = 'assets/imgenes_recomen/gerunds.png';
+const String ImagenR17 = 'assets/imgenes_recomen/passive1.png';
+const String ImagenR18 = 'assets/imgenes_recomen/passive2.png';
+const String ImagenR19 = 'assets/imgenes_recomen/passive3.png';
+const String ImagenR20 = 'assets/imgenes_recomen/passive4.png';
+const String ImagenR21 = 'assets/imgenes_recomen/passive5.png';
+const String ImagenR22 = 'assets/imgenes_recomen/passive6.png';
+const String ImagenR23 = 'assets/imgenes_recomen/passive7.png';
+const String ImagenR24 = 'assets/imgenes_recomen/passive8.png';
+const String ImagenR25 = 'assets/imgenes_recomen/passive9.png';

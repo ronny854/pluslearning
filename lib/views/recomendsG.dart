@@ -14,7 +14,32 @@ class _RecomendsGState extends State<RecomendsG> {
   @override
   Widget build(BuildContext context) {
     var _screenSize = MediaQuery.of(context).size;
-    var _imagenesRecom = [ImagenR1, ImagenR1];
+    var _imagenesRecom = [
+      ImagenR1,
+      ImagenR3,
+      ImagenR4,
+      ImagenR5,
+      ImagenR6,
+      ImagenR7,
+      ImagenR8,
+      ImagenR9,
+      ImagenR10,
+      ImagenR11,
+      ImagenR12,
+      ImagenR13,
+      ImagenR14,
+      ImagenR15,
+      ImagenR16,
+      ImagenR17,
+      ImagenR18,
+      ImagenR19,
+      ImagenR20,
+      ImagenR21,
+      ImagenR22,
+      ImagenR23,
+      ImagenR24,
+      ImagenR25
+    ];
     return Scaffold(
       body: Container(
         child: ListView(
@@ -59,7 +84,7 @@ class _RecomendsGState extends State<RecomendsG> {
                               fit: BoxFit.fill,
                             );
                           },
-                          itemCount: 2,
+                          itemCount: 24,
                           viewportFraction: 0.8,
                           scale: 0.9,
                         ),

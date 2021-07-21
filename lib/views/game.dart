@@ -16,13 +16,6 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 
-/* class Game extends StatefulWidget {
-  final List mydata;
-  Game({Key key, @required this.mydata}) : super(key: key);
-
-  @override
-  _GameState createState() => _GameState(mydata);
-} */
 // ignore: must_be_immutable
 class Game extends StatefulWidget {
   final List<Question> listQuestions;
@@ -142,8 +135,6 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   //int dificultad = 1;
   //double damageHero = 0.2;
   //double damageEnemy = 0.2;
-  double _withImg;
-  double _heighImg;
   bool _dobleTapImg = false;
 
   ////audio player
@@ -219,6 +210,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     _optionState = false;
     if (this.mounted) {
       setState(() {
+        _dobleTapImg = false;
         _play = false;
         //assetsAudioPlayer.stop();
         _isButtonDisabled = true;
@@ -301,10 +293,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   }
 
   void nextquestion() {
-    // print(idTema);
-    //canceltimer = false;
-    //timer = 30;
-    //questionState = false;
+    _dobleTapImg = false;
     numQuestion++;
     _isButtonDisabled = false;
     _optionState = true;
@@ -625,8 +614,8 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   }
 
   Widget _questionImage(Size media) {
-    _withImg = media.width * 0.15;
-    _heighImg = media.height * 0.2;
+    //_withImg = media.width * 0.15;
+    //_heighImg = media.height * 0.2;
     return Container(
       alignment: Alignment.topCenter,
       padding: EdgeInsets.only(top: media.height * 0.11),
@@ -637,13 +626,13 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
             //padding: EdgeInsets.only(top: 45.0, left: 50.0),
             child: Image.asset(
               FondoPreguntas,
-              width: media.width * 0.5033,
+              width: media.width * 0.6333,
               height: media.height * 0.2879,
               fit: BoxFit.cover,
             ),
           ),
           Container(
-            width: media.width * 0.5033,
+            width: media.width * 0.5933,
             height: media.height * 0.1579,
             alignment: Alignment.topCenter,
             padding: EdgeInsets.only(top: media.height * 0.01),
@@ -652,43 +641,32 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
               style: TextStyle(color: Colors.black87, fontSize: 20.0),
             ),
           ),
-          Container(
-            //alignment: Alignment.center,
-            //height: media.height * 0.25,
-            //width: media.width * 0.1,
-            padding: EdgeInsets.only(top: media.height * 0.074),
-            /*  padding: EdgeInsets.only(
-                            top: media.height * 0.109, left: media.width * 0.095, right: media.width * 0.087), */
-
-            //behavior: HitTestBehavior.translucent,
+          AnimatedContainer(
+            duration: Duration(milliseconds: 200),
+            alignment: Alignment.center,
+            height: _dobleTapImg ? media.height * 0.88 : media.height * 0.25,
+            width: _dobleTapImg ? media.width : media.width * 0.15,
+            padding: EdgeInsets.only(top: _dobleTapImg ? 0 : media.height * 0.13),
             child: GestureDetector(
               onDoubleTap: () {
                 if (_dobleTapImg) {
                   setState(() {
-                    _withImg = media.width;
-                    _heighImg = media.height;
+                    _controllerTimer.forward();
                     _dobleTapImg = false;
                   });
                 } else {
                   setState(() {
-                    _withImg = media.width * 0.15;
-                    _heighImg = media.height * 0.2;
+                    _controllerTimer.stop();
+
                     _dobleTapImg = true;
                   });
                 }
               },
-              child: Image.asset(
-                listQuestions[numQuestion].imgQ,
-                width: _withImg,
-                height: _heighImg,
+              child: Image(
+                image: AssetImage(listQuestions[numQuestion].imgQ),
                 fit: BoxFit.fill,
               ),
             ),
-
-/*                               child: Image(
-                              image: AssetImage(listQuestions[numQuestion].imgQ),
-                              fit: BoxFit.fill,
-                            ), */
           ),
         ],
       ),
@@ -747,20 +725,14 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
             width: media.width * 0.8033,
             height: media.height * 0.1579,
             alignment: Alignment.topCenter,
-/*             padding: EdgeInsets.only(
-                top: media.height * 0.109, left: media.width * 0.095, right: media.width * 0.087), */
             child: Text(
               listQuestions[numQuestion].textQ,
               style: TextStyle(color: Colors.black87, fontSize: 20.0),
             ),
           ),
           Container(
-            //width: media.width * 0.8033,
-            //height: media.height * 0.1579,
             padding: EdgeInsets.only(top: media.height * 0.09),
             alignment: Alignment.topCenter,
-/*             padding: EdgeInsets.only(
-                top: media.height * 0.109, left: media.width * 0.095, right: media.width * 0.087), */
             child: AudioWidget.assets(
               path: listQuestions[numQuestion].sndQ,
               play: _play,

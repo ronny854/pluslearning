@@ -44,9 +44,7 @@ class _CharacterState extends State<Character> {
                 fit: BoxFit.fill,
               ),
             ),
-
             _isBlock == true ? _pressSelect(_screenSize) : _characterSelect(_screenSize),
-
             Container(
               padding:
                   EdgeInsets.only(top: _screenSize.height * 0.10, left: _screenSize.width * 0.59),
@@ -85,8 +83,6 @@ class _CharacterState extends State<Character> {
                 ],
               ),
             ),
-
-            //_characterSelect(_screenSize, Personaje_1),
           ],
         ),
       ),

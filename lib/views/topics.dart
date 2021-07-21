@@ -108,7 +108,7 @@ class _TopicsState extends State<Topics> {
       builder: (context) => AlertDialog(
         title: Text('Start calibration.'),
         content: Text(
-            'This game will serve to evaluate your knowledge in this subject and thus adjust the difficulty.'),
+            'This game will serve to evaluate your level of English and adjust the difficulty. Therefore, you will not be able to DO or RECEIVE damage until you complete the calibration questions.'),
         actions: [
           TextButton(child: Text('No'), onPressed: () => Navigator.of(context).pop()),
           TextButton(
