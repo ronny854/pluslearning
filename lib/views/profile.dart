@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:learning_appfinal/others/constans.dart';
 //import 'package:learning_appfinal/others/state_manager.dart';
 import 'package:learning_appfinal/models/topics_model.dart';
@@ -153,7 +154,7 @@ class _ProfileState extends State<Profile> {
               lineHeight: 14.0,
               percent: pointsA.porcentajeDe,
               center: Text(
-                '${pointsA.porcentajeDe * 100} %',
+                '${pointsA.porcentajeDe * 100.0} %',
                 style: new TextStyle(fontSize: 12.0),
               ),
               trailing: Icon(Icons.mood),

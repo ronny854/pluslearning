@@ -22,6 +22,7 @@ class _TutorialState extends State<Tutorial> {
       //bubble: Image.asset(IconPers,
       body: const Text(
         'A new way to learn English while having fun.',
+        style: TextStyle(fontSize: 20.0),
       ),
       title: const Text(
         'Welcome to',
@@ -43,6 +44,7 @@ class _TutorialState extends State<Tutorial> {
       body: Container(
         child: const Text(
           'Defeat enemies by responding correctly to questions raised at the set time, correct response is an attack from you and an incorrect response an attack from the enemy.',
+          style: TextStyle(fontSize: 20.0),
         ),
       ),
       title: const Text(
@@ -65,6 +67,7 @@ class _TutorialState extends State<Tutorial> {
       //iconImageAssetPath: 'assets/waiter.png',
       body: const Text(
         'Also if you do not respond in the established time the enemy will attack you.',
+        style: TextStyle(fontSize: 20.0),
       ),
       title: const Text('How to play?'),
       mainImage: Container(
@@ -85,6 +88,7 @@ class _TutorialState extends State<Tutorial> {
       //iconImageAssetPath: 'assets/waiter.png',
       body: const Text(
         'Remember, swipe your finger down the bottom of the screen to see all the options available for the question.',
+        style: TextStyle(fontSize: 20.0),
       ),
       title: const Text('How to play?'),
       mainImage: Container(
@@ -104,6 +108,7 @@ class _TutorialState extends State<Tutorial> {
       //iconImageAssetPath: 'assets/waiter.png',
       body: const Text(
         'Double-tap on the image to enlarge and view it better.',
+        style: TextStyle(fontSize: 20.0),
       ),
       title: const Text('How to play?'),
       mainImage: Container(
@@ -124,6 +129,7 @@ class _TutorialState extends State<Tutorial> {
       //bubble: Image.asset(IconPers,,
       body: const Text(
         'When you see the play symbol, tap on the button to listen to the audio.',
+        style: TextStyle(fontSize: 20.0),
       ),
       title: const Text(
         'How to play?',
@@ -143,6 +149,7 @@ class _TutorialState extends State<Tutorial> {
       //bubble: Image.asset(IconPers,,
       body: const Text(
         'When you have to write use the contractions of or short form of the word.',
+        style: TextStyle(fontSize: 20.0),
       ),
       title: const Text(
         'How to play?',
@@ -163,6 +170,7 @@ class _TutorialState extends State<Tutorial> {
       //bubble: Image.asset(IconPers,,
       body: const Text(
         'Collect points to unlock characters, you can select them in the characters part.',
+        style: TextStyle(fontSize: 20.0),
       ),
       title: const Text(
         'Characters',
@@ -180,8 +188,9 @@ class _TutorialState extends State<Tutorial> {
     PageViewModel(
       pageColor: const Color(0xFF03A9F4),
       //iconImageAssetPath: 'assets/waiter.png',
-      body: const Text(
+      body: Text(
         'Profile You can review your performance of each topic in the profile section, when your performance is less than 30%, a recommendation button will appear.',
+        style: TextStyle(fontSize: 20.0),
       ),
       title: const Text('Profile'),
       mainImage: Image.asset(
@@ -212,6 +221,7 @@ class _TutorialState extends State<Tutorial> {
       //iconImageAssetPath: 'assets/taxi-driver.png',
       body: const Text(
         'Select a game mode and start your first to calibrate your level.',
+        style: TextStyle(fontSize: 20.0),
       ),
       title: const Text("let's go!"),
       mainImage: Image.asset(

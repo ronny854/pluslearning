@@ -25,12 +25,20 @@ class _IntroState extends State<Intro> {
 
   @override
   Widget build(BuildContext context) {
+    var _media = MediaQuery.of(context).size;
+    var ancho = _media.width;
+    var alto = _media.height;
+    print("ancho-width= $ancho  alto-height =$alto");
     return Scaffold(
-      body: FlareActor(
-        Introanimacion,
-        animation: "intro",
-        alignment: Alignment.center,
-        fit: BoxFit.cover,
+      body: Container(
+        height: _media.height,
+        width: _media.width,
+        child: FlareActor(
+          Introanimacion,
+          animation: "intro",
+          alignment: Alignment.center,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }

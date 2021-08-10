@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare_controls.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 //import 'package:learning_appfinal/conexion/db_helper.dart';
 import 'package:learning_appfinal/others/constans.dart';
 import 'package:learning_appfinal/models/options_model.dart';
@@ -138,15 +137,20 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   bool _dobleTapImg = false;
 
   ////audio player
-  bool _play = false;
-  AnimationController audioAnimation;
+  //bool _play = false;
+  //AnimationController audioAnimation;
   final assetsAudioPlayer = AssetsAudioPlayer();
   final opcionEs = TextEditingController();
+  bool isAnimating = false;
+  bool newAudio = true;
+  AssetsAudioPlayer player = AssetsAudioPlayer();
 
   num desem = 0;
   @override
   void dispose() {
     //this.opcionEs.dispose();
+    this.player.dispose();
+    // this._controllerTimer.dispose();
     this.assetsAudioPlayer.dispose();
     if (_controllerTimer.isAnimating || _controllerTimer.isCompleted) {
       this._controllerTimer.dispose();
@@ -159,12 +163,26 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     _isButtonDisabled = false;
 
     super.initState();
+    player.playlistAudioFinished.listen((event) {
+      //iconController.reverse();
+      if (this.mounted) {
+        setState(() {
+          isAnimating = false;
+        });
+        _controllerTimer.forward();
+      }
+    });
 
     _controllerTimer = AnimationController(vsync: this, duration: Duration(seconds: limitTime));
     _controllerTimer.addListener(() {
       if (_controllerTimer.isCompleted) {
         if (this.mounted) {
           setState(() {
+            if (idTema == 3) {
+              isAnimating = false;
+              newAudio = true;
+              player.pause();
+            }
             questionsIncorrect += 1;
             _controllerTimer.stop();
             _animacionEnemy = "ataque";
@@ -210,9 +228,13 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     _optionState = false;
     if (this.mounted) {
       setState(() {
-        _dobleTapImg = false;
-        _play = false;
-        //assetsAudioPlayer.stop();
+        if (idTema == 3) {
+          newAudio = true;
+          _dobleTapImg = false;
+          isAnimating = false;
+          player.pause();
+        }
+
         _isButtonDisabled = true;
         _controllerTimer.stop();
         // _controllerTimer.reset();
@@ -319,11 +341,11 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
 
     _controllerTimer.reset();
     _controllerTimer.forward();
-    if (idTema == 3) {
-      audioAnimation.reverse();
-    }
+    //if (idTema == 3) {
+    //  audioAnimation.reverse();
+    //}
 
-    _play = false;
+    // _play = false;
 
     //starttimer();
   }
@@ -380,6 +402,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
+    player.pause();
     final _pointsProvider = Provider.of<PointsProvider>(context, listen: false);
     _pointsProvider.cargarPuntos(idTema);
 
@@ -405,17 +428,17 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                     Image.asset(
                       '${prefs.iconPersonajeS}',
                       fit: BoxFit.cover,
-                      height: 55.0,
-                      width: 55.0,
+                      height: media.height * 0.1336,
+                      width: media.width * 0.0805,
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 160.0),
+                      padding: EdgeInsets.only(left: media.width * 0.2342),
                     ),
                     Transform(
                       transform: Matrix4.diagonal3Values(-1.0, 1.0, 1.0),
                       child: LinearPercentIndicator(
-                        width: 160.0,
-                        lineHeight: 22.0,
+                        width: media.width * 0.2342,
+                        lineHeight: media.height * 0.0534,
                         percent: 1 - lifeHero,
                         backgroundColor: barHero,
                         progressColor: Colors.grey,
@@ -425,11 +448,11 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 93.0),
+                      padding: EdgeInsets.only(left: media.width * 0.1361),
                     ),
                     LinearPercentIndicator(
-                      width: 160.0,
-                      lineHeight: 22.0,
+                      width: media.width * 0.2342,
+                      lineHeight: media.height * 0.0534,
                       percent: 1 - lifeEnemy,
                       //linearStrokeCap: LinearStrokeCap.roundAll,
                       backgroundColor: barEnemy,
@@ -441,8 +464,8 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
                     Image.asset(
                       iconEnemy,
                       fit: BoxFit.cover,
-                      height: 55.0,
-                      width: 55.0,
+                      height: media.height * 0.1336,
+                      width: media.width * 0.0805,
                     ),
                   ],
                 ),
@@ -733,38 +756,29 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
           Container(
             padding: EdgeInsets.only(top: media.height * 0.09),
             alignment: Alignment.topCenter,
-            child: AudioWidget.assets(
-              path: listQuestions[numQuestion].sndQ,
-              play: _play,
-              child: FloatingActionButton(
-                  backgroundColor: _play ? Colors.red : Colors.green,
-                  child: _play ? Icon(Icons.pause) : Icon(Icons.play_arrow),
-/*                   child: Text(
-                    _play ? "pause" : "play",
-                  ), */
-                  onPressed: () {
-                    setState(() {
-                      _play = !_play;
-                    });
-                    if (_play) {
+            child: FloatingActionButton(
+                backgroundColor: isAnimating ? Colors.red : Colors.green,
+                child: isAnimating ? Icon(Icons.pause) : Icon(Icons.play_arrow),
+                onPressed: () {
+                  setState(() {
+                    isAnimating = !isAnimating;
+
+                    if (isAnimating) {
+                      if (newAudio) {
+                        player.open(Audio(listQuestions[numQuestion].sndQ.toString()),
+                            showNotification: true);
+                        newAudio = false;
+                      }
                       _controllerTimer.stop();
+                      player.play();
+                      newAudio = false;
                     } else {
                       _controllerTimer.forward();
+                      player.pause();
+                      newAudio = true;
                     }
-                  }),
-              onReadyToPlay: (duration) {
-                //onReadyToPlay
-              },
-              onPositionChanged: (current, duration) {
-                //onPositionChanged
-              },
-              onFinished: () {
-                setState(() {
-                  _play = false;
-                });
-                _controllerTimer.forward();
-              },
-            ),
+                  });
+                }),
           ),
         ],
       ),
@@ -772,8 +786,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
   }
 
   num formatNumero(num numero) {
-    var f = NumberFormat("###.0#");
-    num n = num.parse(f.format(numero));
+    var n = num.parse(numero.toStringAsFixed(2));
     return n;
   }
 

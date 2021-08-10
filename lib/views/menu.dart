@@ -21,7 +21,7 @@ class _MenuState extends State<Menu> {
     topicsProvider.cargarTemas();
     var _media = MediaQuery.of(context).size;
     double distancia = _media.height * 0.55;
-    print('altura= ${_media.height} ancho= ${_media.width}');
+    //print('altura= ${_media.height} ancho= ${_media.width}');
     return Scaffold(
       body: Container(
         //alignment: Alignment.center,
@@ -29,17 +29,19 @@ class _MenuState extends State<Menu> {
           //alignment: Alignment.center,
           children: [
             Container(
+              height: _media.height,
+              width: _media.width,
               child: FlareActor(
                 Introanimacion,
                 animation: "menu",
                 alignment: Alignment.center,
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
               ),
             ),
             Container(
-                width: _media.width * 0.25,
+                width: _media.width * 0.35,
                 child: Image.asset(
-                  'assets/imagenes/logo.gif',
+                  'assets/imagenes/logo_pucesi.png',
                   fit: BoxFit.fill,
                 )),
             Container(
