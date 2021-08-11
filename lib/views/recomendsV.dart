@@ -27,7 +27,7 @@ class _RecomendsVState extends State<RecomendsV> {
             alignment: Alignment.topCenter,
             padding: EdgeInsets.only(top: _screenSize.height * 0.09),
             child: Text(
-              "Recommendations for 'Vocabulary'",
+              "Suggestions for 'Vocabulary'",
               style: titulosR(_screenSize),
             ),
           ),

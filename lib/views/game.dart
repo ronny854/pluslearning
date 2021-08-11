@@ -362,12 +362,8 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
     } else {
       prefs.calibrateVocabulary = true;
     }
-    //_controllerTimer.dispose();
-    return Future.delayed(Duration(seconds: 2), () {
-      //_controllerTimer.stop();
-      //PointsAModel().updateP(res, idTema);
-      //print(topic.id);
 
+    return Future.delayed(Duration(seconds: 2), () {
       final _pointsProvider = Provider.of<PointsProvider>(context, listen: false);
       //_pointsProvider.cargarPuntos(idTema);
       final _pointsA = _pointsProvider.pointsA;
@@ -375,10 +371,47 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
       int tincorrectQ = _pointsA[0].numQuesIn + questionsIncorrect;
       desem = formatNumero((tcorrectQ) / (tcorrectQ + tincorrectQ));
 
+      if (idTema == 1 && desem <= 0.3 && prefs.calibrateGrammar == true) {
+        prefs.countG += 1;
+      } else {
+        prefs.countG = 0;
+        prefs.notificationG = false;
+      }
+      if (idTema == 2 && desem <= 0.3 && prefs.calibrateReading == true) {
+        prefs.countR += 1;
+      } else {
+        prefs.countR = 0;
+        prefs.notificationR = false;
+      }
+      if (idTema == 3 && desem <= 0.3 && prefs.calibrateListening == true) {
+        prefs.countL += 1;
+      } else {
+        prefs.countL = 0;
+        prefs.notificationL = false;
+      }
+      if (idTema == 4 && desem <= 0.3 && prefs.calibrateVocabulary == true) {
+        prefs.countV += 1;
+      } else {
+        prefs.countV = 0;
+        prefs.notificationV = false;
+      }
+
+      if (prefs.countG >= 3) {
+        prefs.notificationG = true;
+      }
+      if (prefs.countR >= 3) {
+        prefs.notificationR = true;
+      }
+      if (prefs.countL >= 3) {
+        prefs.notificationL = true;
+      }
+      if (prefs.countV >= 3) {
+        prefs.notificationV = true;
+      }
+
       res = _pointsA[0].scoreT + points;
       print('desempenio = $desem');
-      //print('correct= $questionsCorrect incorrect=$questionsIncorrect');
-      //print(_pointsA[0].numQuesC);
+
       _pointsProvider.updatePoints(res, idTema, tcorrectQ, tincorrectQ, desem);
       if (res >= 200) {
         prefs.personaje1B = false;
@@ -394,6 +427,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
         return Score(
           points: points,
           winner: _winner,
+          idtema: idTema,
         );
       }));
     });
@@ -708,13 +742,13 @@ class _GameState extends State<Game> with TickerProviderStateMixin {
             child: Image.asset(
               FondoPreguntas,
               width: media.width * 0.8633,
-              height: media.height * 0.1579,
+              height: media.height * 0.2079,
               fit: BoxFit.cover,
             ),
           ),
           Container(
             width: media.width * 0.8033,
-            height: media.height * 0.1579,
+            height: media.height * 0.1979,
             alignment: Alignment.topCenter,
 /*             padding: EdgeInsets.only(
                 top: media.height * 0.109, left: media.width * 0.095, right: media.width * 0.087), */

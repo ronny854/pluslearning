@@ -104,4 +104,70 @@ class Preferences {
   set isCalibrating(bool stateT) {
     _prefs.setBool('calibrate', stateT);
   }
+
+  // notificaciones de recomendaciones
+
+  get countG {
+    return _prefs.getInt('countGrammar') ?? 0;
+  }
+
+  set countG(int count) {
+    _prefs.setInt('countGrammar', count);
+  }
+
+  get countR {
+    return _prefs.getInt('countReading') ?? 0;
+  }
+
+  set countR(int count) {
+    _prefs.setInt('countReading', count);
+  }
+
+  get countL {
+    return _prefs.getInt('countListening') ?? 0;
+  }
+
+  set countL(int count) {
+    _prefs.setInt('countListening', count);
+  }
+
+  get countV {
+    return _prefs.getInt('countVocabulary') ?? 0;
+  }
+
+  set countV(int count) {
+    _prefs.setInt('countVocabulary', count);
+  }
+
+  get notificationG {
+    return _prefs.getBool('notificationGrammar') ?? false;
+  }
+
+  set notificationG(bool notification) {
+    _prefs.setBool('notificationGrammar', notification);
+  }
+
+  get notificationR {
+    return _prefs.getBool('notificationReading') ?? false;
+  }
+
+  set notificationR(bool notification) {
+    _prefs.setBool('notificationReading', notification);
+  }
+
+  get notificationL {
+    return _prefs.getBool('notificationListening') ?? false;
+  }
+
+  set notificationL(bool notification) {
+    _prefs.setBool('notificationListening', notification);
+  }
+
+  get notificationV {
+    return _prefs.getBool('notificationVocabulary') ?? false;
+  }
+
+  set notificationV(bool notification) {
+    _prefs.setBool('notificationVocabulary', notification);
+  }
 }

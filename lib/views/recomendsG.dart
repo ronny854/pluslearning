@@ -59,7 +59,7 @@ class _RecomendsGState extends State<RecomendsG> {
                         alignment: Alignment.topCenter,
                         padding: EdgeInsets.only(top: _screenSize.height * 0.05),
                         child: Text(
-                          "Recommendations for 'Grammar'",
+                          "Suggestions for 'Grammar'",
                           style: titulosR(_screenSize),
                         ),
                       ),

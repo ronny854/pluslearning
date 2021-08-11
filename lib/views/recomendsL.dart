@@ -31,7 +31,7 @@ class _RecomendsLState extends State<RecomendsL> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(top: _screenSize.height * 0.09),
                       child: Text(
-                        "Recommendations for 'Listening'",
+                        "Suggestions for 'Listening'",
                         style: titulosR(_screenSize),
                       ),
                     ),

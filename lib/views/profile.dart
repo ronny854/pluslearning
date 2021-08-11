@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:learning_appfinal/others/constans.dart';
 //import 'package:learning_appfinal/others/state_manager.dart';
 import 'package:learning_appfinal/models/topics_model.dart';
 import 'package:learning_appfinal/models/pointsA_model.dart';
+import 'package:learning_appfinal/others/preferences.dart';
 import 'package:learning_appfinal/views/recomendsG.dart';
 import 'package:learning_appfinal/views/recomendsL.dart';
 import 'package:learning_appfinal/views/recomendsR.dart';
@@ -23,6 +23,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   int idTopics = 1;
   String _tema = "Grammar";
+  final prefs = new Preferences();
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
@@ -162,7 +163,7 @@ class _ProfileState extends State<Profile> {
               backgroundColor: Colors.grey,
               progressColor: Colors.blue,
             ),
-            pointsA.idTo == 1
+            pointsA.idTo == 1 && prefs.notificationG
                 ? Container(
                     child: MaterialButton(
                       onPressed: () {
@@ -172,10 +173,10 @@ class _ProfileState extends State<Profile> {
                               builder: (context) => RecomendsG(),
                             ));
                       },
-                      child: Text('Recommendations'),
+                      child: Text('Suggestions'),
                     ),
                   )
-                : pointsA.idTo == 2
+                : pointsA.idTo == 2 && prefs.notificationR
                     ? Container(
                         child: MaterialButton(
                           onPressed: () {
@@ -188,7 +189,7 @@ class _ProfileState extends State<Profile> {
                           child: Text('Recommendations'),
                         ),
                       )
-                    : pointsA.idTo == 3
+                    : pointsA.idTo == 3 && prefs.notificationL
                         ? Container(
                             child: MaterialButton(
                               onPressed: () {
@@ -201,7 +202,7 @@ class _ProfileState extends State<Profile> {
                               child: Text('Recommendations'),
                             ),
                           )
-                        : pointsA.idTo == 4
+                        : pointsA.idTo == 4 && prefs.notificationV
                             ? Container(
                                 child: MaterialButton(
                                   onPressed: () {
@@ -215,7 +216,7 @@ class _ProfileState extends State<Profile> {
                                 ),
                               )
                             : Container(
-                                child: Text('nada'),
+                                child: Text(''),
                               ),
           ],
         );
